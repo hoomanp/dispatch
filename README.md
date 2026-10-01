@@ -188,6 +188,26 @@ $$\text{Trust Score} = \frac{\alpha}{\alpha + \beta}, \quad \text{Confidence} = 
 
 ---
 
+### 6. Dynamic Rate Limiting & Escalation Workflows (Phase 2)
+
+* **Trust-Tier Dynamic Rate Limiting:** Sliding-window rate limiter enforces elastic RPM quotas based on real-time agent trust:
+  * **Probation:** Capped strictly at `10 RPM` to mitigate runaway tool loops or malicious prompt attacks.
+  * **Standard:** Baseline organizational limit of `60 RPM`.
+  * **Trusted:** Expanded capacity up to `180 RPM`.
+  * Throttled requests emit standard HTTP 429 responses with `Retry-After`, `X-RateLimit-Limit`, and `X-RateLimit-Remaining` headers, tracked by the `dispatch_rate_limit_throttles_total` Prometheus counter.
+* **Persistent Escalation Lifecycle & Human-in-the-Loop Review:**
+  * Denied actions and tier escalations are durably recorded in the `boundary_escalations` table (`pending`, `approved`, `rejected`).
+  * Security leads review and resolve escalations via `POST /boundary/escalations/{id}/verdict`:
+    ```bash
+    curl -X POST http://localhost:8080/boundary/escalations/esc_abc123/verdict \
+      -H "Content-Type: application/json" \
+      -d '{"verdict": "approved", "reviewer": "sec-ops", "reason": "Pre-authorized quarterly migration"}'
+    ```
+  * Resolving an escalation automatically updates the Bayesian trust ledger: an approved escalation records `human_approve` (raising the agent's score), while a rejection records `human_reject` (penalizing the agent's score).
+* **Multi-Tenant Enterprise Tagging:** Supports `organization_id` and `project_id` via request body or HTTP headers (`X-Organization-Id`, `X-Project-Id`), stamped directly into the cryptographic audit record for FinOps department-level chargeback.
+
+---
+
 ## Client Integration & Wire Format Compatibility
 
 DISPATCH features native edge adapters. Existing SDK clients point their `base_url` to DISPATCH without modifying application logic.
@@ -204,7 +224,9 @@ response = client.chat.completions.create(
     extra_body={
         "classification": "confidential",
         "agent_id": "backend-architect-bot",
-        "session_id": "session-prod-88"
+        "session_id": "session-prod-88",
+        "organization_id": "engineering-dept",
+        "project_id": "core-infrastructure",
     }
 )
 
