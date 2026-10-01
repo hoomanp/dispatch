@@ -29,3 +29,14 @@ actions:
   memory.write: autonomous
   memory.fact_extraction: autonomous
   documents.compress: autonomous
+
+# Blast-radius rate limits (Phase 2): sliding window RPM per trust tier
+rate_limits:
+  default_rpm: 60
+  probation_rpm: 10
+  trusted_rpm: 180
+
+# Escalation notifications (Phase 2): optional webhook dispatch
+notifications:
+  webhook_url: ""           # e.g. https://ops.example.com/webhooks/escalations
+  slack_webhook_url: ""     # e.g. https://hooks.slack.com/services/...

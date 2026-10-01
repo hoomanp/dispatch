@@ -33,6 +33,7 @@ from otel import set_routing_attributes
 from otel import setup as otel_setup
 from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge,
                                Histogram, generate_latest)
+from rate_limiter import rate_limiter
 from trust_ledger import trust
 
 logging.basicConfig(
@@ -75,6 +76,8 @@ BOUNDARY_DENIALS = _metric(Counter, "dispatch_boundary_denials_total",
                            "Autonomy boundary denials", ["action", "reason"])
 AGENT_TRUST = _metric(Gauge, "dispatch_agent_trust_score",
                       "Per-agent trust score (0-1)", ["agent_id"])
+RATE_LIMIT_THROTTLES = _metric(Counter, "dispatch_rate_limit_throttles_total",
+                              "Rate limit throttles", ["agent_id"])
 BUDGET_LIMIT.set(MONTHLY_BUDGET)
 
 # ── Task classification ──────────────────────────────────────────────────────
@@ -235,6 +238,8 @@ class ChatRequest(BaseModel):
     no_cache: bool = False
     classification: Optional[str] = None  # regulated|confidential|internal|public
     agent_id: Optional[str] = None  # for trust scoring; falls back to X-Agent-Id header
+    organization_id: Optional[str] = None  # Phase 2: multi-tenant organization tag
+    project_id: Optional[str] = None  # Phase 2: multi-tenant project tag
 
 
 class SessionRequest(BaseModel):
@@ -247,6 +252,39 @@ async def chat(req: ChatRequest, request: Request):
     if not req.messages:
         raise HTTPException(400, "messages required")
     agent_id = req.agent_id or request.headers.get("x-agent-id", "unattributed")
+    org_id = req.organization_id or request.headers.get("x-organization-id", "")
+    proj_id = req.project_id or request.headers.get("x-project-id", "")
+
+    # Phase 2: Dynamic Rate Limiting (gated by agent trust tier)
+    snap = trust.snapshot(agent_id)
+    rate_limits = boundary.policy.get("rate_limits", {})
+    if snap.tier_name == "probation":
+        max_rpm = int(rate_limits.get("probation_rpm", 10))
+    elif snap.tier_name == "trusted":
+        max_rpm = int(rate_limits.get("trusted_rpm", 180))
+    else:
+        max_rpm = int(rate_limits.get("default_rpm", 60))
+
+    allowed, remaining, retry_after = rate_limiter.check(f"agent:{agent_id}", max_rpm)
+    if not allowed:
+        RATE_LIMIT_THROTTLES.labels(agent_id=agent_id).inc()
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "rate_limit_exceeded",
+                "message": f"Agent '{agent_id}' ({snap.tier_name} tier) exceeded rate limit of {max_rpm} RPM.",
+                "retry_after_seconds": retry_after,
+                "agent_id": agent_id,
+                "trust_tier": snap.tier_name,
+            },
+            headers={
+                "Retry-After": str(retry_after),
+                "X-RateLimit-Limit": str(max_rpm),
+                "X-RateLimit-Remaining": "0",
+            },
+        )
+
     prompt = str(req.messages[-1].get("content", ""))
     context_tokens = int(sum(
         len(str(m.get("content", "")).split()) * 1.3 for m in req.messages))
@@ -304,7 +342,9 @@ async def chat(req: ChatRequest, request: Request):
         classification=req.classification,
         model_group=model_group,
         documents_chars=docs_chars,
-        agent_id=agent_id)
+        agent_id=agent_id,
+        organization_id=org_id,
+        project_id=proj_id)
     if decision.trust:
         AGENT_TRUST.labels(agent_id=agent_id).set(decision.trust["score"])
     if not decision.allowed:
@@ -572,10 +612,39 @@ async def boundary_policy():
     return boundary.policy_view()
 
 
+class EscalationVerdictRequest(BaseModel):
+    verdict: str  # approved | rejected
+    reviewer: str = "security-admin"
+    reason: str = ""
+
+
+@app.post("/boundary/escalations/{escalation_id}/verdict")
+async def resolve_escalation(escalation_id: str, req: EscalationVerdictRequest):
+    """Phase 2: Review and resolve a pending escalation.
+    
+    Approving raises the agent's trust score; rejecting penalizes it.
+    """
+    try:
+        result = boundary.resolve_escalation(
+            escalation_id=escalation_id,
+            verdict=req.verdict,
+            reviewer=req.reviewer,
+            reason=req.reason,
+        )
+        agent_id = result.get("agent_id")
+        if agent_id:
+            AGENT_TRUST.labels(agent_id=agent_id).set(result.get("new_trust_score", 0.5))
+        return result
+    except KeyError as e:
+        raise HTTPException(404, str(e))
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
 @app.get("/boundary/escalations")
-async def boundary_escalations():
+async def boundary_escalations(status: Optional[str] = None):
     """Denied actions awaiting a policy change / approval."""
-    return {"escalations": boundary.escalations()}
+    return {"escalations": boundary.escalations(status=status)}
 
 
 @app.get("/health")

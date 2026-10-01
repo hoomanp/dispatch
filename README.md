@@ -318,7 +318,8 @@ docker compose --profile observability up -d
 | `GET` | `/trust` | Global trust leaderboard sorted by recent activity. |
 | `POST` | `/trust/{agent_id}/event` | Ingest external verdict (`eval_pass`, `eval_fail`, `human_approve`, `human_reject`). |
 | `GET` | `/boundary/policy` | Inspect active autonomy boundary rules and classification ceilings. |
-| `GET` | `/boundary/escalations` | List pending escalation records requiring security sign-off. |
+| `GET` | `/boundary/escalations` | List escalation records (supports `?status=pending` or `?status=approved`). |
+| `POST` | `/boundary/escalations/{id}/verdict` | Review and resolve a pending escalation (`approved` or `rejected`) with Bayesian trust update. |
 | `GET` | `/memory/stats` | Memory engine metrics across hot, warm, and cold tiers. |
 | `POST` | `/memory/search` | Search semantic memory using hybrid FTS5 and vector retrieval. |
 | `POST` | `/context/preview` | Preview hierarchical map-reduce compression plan for massive docs. |
@@ -339,6 +340,7 @@ docker compose --profile observability up -d
 | `dispatch_monthly_spend_usd` | Gauge | — | Current cumulative cloud spend for the monthly accounting cycle. |
 | `dispatch_monthly_budget_usd` | Gauge | — | Hard monthly expenditure limit. |
 | `dispatch_boundary_denials_total`| Counter | `action`, `reason` | Security boundary denials and policy escalations triggered. |
+| `dispatch_rate_limit_throttles_total` | Counter | `agent_id` | Sliding-window rate limit throttles partitioned by agent. |
 | `dispatch_agent_trust_score` | Gauge | `agent_id` | Real-time Bayesian trust score ($0.0 – 1.0$) per active agent. |
 | `dispatch_memory_facts` | Gauge | — | Total verified semantic facts stored in cold memory. |
 | `dispatch_memory_sessions` | Gauge | — | Total episodic sessions indexed. |
@@ -386,14 +388,16 @@ Evaluation records automatically append to `evals/results/history.jsonl`. A buil
   * SQLite WAL mode concurrency safeguards with 30s busy timeouts and transactional guarantees.
   * 64-bit point hashing in Qdrant to eliminate vector collision risks.
   * Native protocol edge adapters for Anthropic and Gemini SDKs.
-* [ ] **Phase 2: Distributed Enterprise Consensus (v1.2.0)**
-  * Redis-backed distributed trust ledger for multi-instance gateway clusters.
-  * Persistent escalation approval workflows with Webhook / Slack integration.
-  * Dynamic token-bucket rate limiting per `agent_id`.
-* [ ] **Phase 3: Semantic Zero-Shot Classification (v1.3.0)**
+* [x] **Phase 2: Enterprise Cluster & Governance (v1.2.0)**
+  * Sliding-window rate limiting per `agent_id` with dynamic trust tier throttling (Probation 10 RPM, Standard 60 RPM, Trusted 180 RPM).
+  * Persistent escalation storage with full lifecycle tracking (`pending`, `approved`, `rejected`).
+  * Interactive escalation resolution endpoint (`POST /boundary/escalations/{id}/verdict`) with automated Bayesian trust updates.
+  * Multi-tenant organization and project tagging (`organization_id`, `project_id`).
+  * Webhook and Slack notification dispatcher for security review.
+* [ ] **Phase 3: Cognitive Routing & Self-Healing Memory (v1.3.0)**
   * Hybrid regex + small local embedding classifier for edge-case prompt routing.
   * Automated contradictory fact resolution in cold semantic memory.
-  * Fine-grained department-level FinOps cost allocation tags.
+  * Fine-grained department-level FinOps cost allocation and chargeback reports.
 
 ---
 
