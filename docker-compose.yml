@@ -1,0 +1,134 @@
+version: "3.9"
+
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: dispatch-litellm
+    restart: unless-stopped
+    ports: ["4000:4000"]
+    volumes:
+      - ./config/litellm_config.yaml:/app/config.yaml:ro
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - KIMI_API_KEY=${KIMI_API_KEY:-}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-dispatch-master}
+      - DATABASE_URL=postgresql://litellm:litellm@postgres:5432/litellm
+      - REDIS_URL=redis://redis:6379
+      - STORE_MODEL_IN_DB=True
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    depends_on:
+      redis: {condition: service_healthy}
+      postgres: {condition: service_healthy}
+      qdrant: {condition: service_started}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health/liveliness"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  dispatch:
+    build: ./dispatcher
+    container_name: dispatch-api
+    restart: unless-stopped
+    ports: ["8080:8080"]
+    environment:
+      - LITELLM_URL=http://litellm:4000
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-dispatch-master}
+      - MONTHLY_BUDGET_USD=${MONTHLY_BUDGET_USD:-50}
+      - DAILY_SOFT_LIMIT_USD=${DAILY_SOFT_LIMIT_USD:-5}
+      - QDRANT_URL=http://qdrant:6333
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
+      - MEMORY_DB=/data/memory.db
+      - DISPATCH_API_KEY=${DISPATCH_API_KEY:-}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      - OTEL_SERVICE_NAME=dispatch
+    volumes:
+      - dispatch_memory:/data
+    depends_on:
+      litellm: {condition: service_healthy}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  redis:
+    image: redis:7-alpine
+    container_name: dispatch-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru --save ""
+    volumes: ["redis_data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: dispatch-qdrant
+    restart: unless-stopped
+    ports: ["6333:6333"]
+    volumes: ["qdrant_data:/qdrant/storage"]
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dispatch-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=litellm
+      - POSTGRES_PASSWORD=litellm
+      - POSTGRES_DB=litellm
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Observability (start with: docker compose --profile observability up -d)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: dispatch-prometheus
+    profiles: ["observability"]
+    restart: unless-stopped
+    ports: ["9090:9090"]
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: dispatch-grafana
+    profiles: ["observability"]
+    restart: unless-stopped
+    ports: ["3001:3000"]
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-dispatch}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on: [prometheus]
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: dispatch-jaeger
+    profiles: ["observability"]
+    restart: unless-stopped
+    ports: ["16686:16686", "4318:4318"]
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  redis_data:
+  qdrant_data:
+  postgres_data:
+  dispatch_memory:

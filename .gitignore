@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+*.db
+*.db-wal
+*.db-shm
+.venv/
+venv/
+node_modules/
+.DS_Store
+data/
+dispatch-oss.zip
+

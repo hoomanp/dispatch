@@ -1,0 +1,31 @@
+# Autonomy boundary policy — control-plane config.
+# Every request is stamped (audit_id + residency + classification) and
+# gated here before any provider is reached.
+
+residency: local-cluster
+default_classification: internal
+
+# Data classification -> highest tier usable WITHOUT approval.
+# 0=local  1=free-quota cloud  2=budget cloud  3=premium cloud
+classification_tier_ceiling:
+  regulated: 0        # PHI/PII-class data never leaves local hardware
+  confidential: 2
+  internal: 3
+  public: 3
+
+# Blast-radius caps
+max_cost_per_request_usd: 0.50
+# absolute ceiling — a trusted agent's cost cap can widen toward this
+# but never past it. Not earnable; change only by editing this file.
+hard_max_cost_per_request_usd: 2.00
+max_documents_chars: 50000000
+
+# Action autonomy levels: autonomous | approval | forbidden
+actions:
+  inference.tier0: autonomous
+  inference.tier1: autonomous
+  inference.tier2: autonomous
+  inference.tier3: autonomous     # set to "approval" to gate premium spend
+  memory.write: autonomous
+  memory.fact_extraction: autonomous
+  documents.compress: autonomous

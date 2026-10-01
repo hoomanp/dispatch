@@ -1,0 +1,200 @@
+# DISPATCH — LiteLLM backbone configuration.
+#
+# Three cache layers:
+#   Layer 1: response cache (Redis exact + Qdrant semantic) — configured below
+#   Layer 2: provider KV / prompt caching — per-model below
+#   Layer 3: vLLM prefix cache — server-side, see scripts/vllm_start.sh
+#
+# EDIT BEFORE FIRST RUN:
+#   1. Replace 192.168.1.x with your node IPs (Tailscale IPs work well)
+#   2. Delete any local model entries you don't have hardware for
+#   3. Delete any cloud entries you don't have keys for
+
+model_list:
+
+  # ── TIER 0: local hardware (free) ────────────────────────────────
+
+  # NVIDIA GPU box running vLLM (best concurrent throughput)
+  - model_name: local-fast
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://192.168.1.30:8000
+      api_key: none
+    model_info: {tier: "0-local", rpm: 200}
+
+  # Always-on box running Ollama
+  - model_name: local-always-on
+    litellm_params:
+      model: ollama/phi4-mini
+      api_base: http://192.168.1.20:11434
+    model_info: {tier: "0-local", rpm: 60}
+
+  - model_name: local-always-on
+    litellm_params:
+      model: ollama/qwen2.5:14b
+      api_base: http://192.168.1.20:11434
+    model_info: {tier: "0-local", rpm: 20}
+
+  # Embeddings (also powers the semantic cache + memory engine)
+  - model_name: local-embed
+    litellm_params:
+      model: ollama/nomic-embed-text
+      api_base: http://192.168.1.20:11434
+    model_info: {tier: "0-local"}
+
+  # Laptop running LM Studio (optional; delete if not used)
+  - model_name: local-mobile
+    litellm_params:
+      model: openai/phi4-mini
+      api_base: http://192.168.1.10:1234
+      api_key: lm-studio
+    model_info: {tier: "0-local", rpm: 30}
+
+  # ── TIER 1: free API quotas ──────────────────────────────────────
+
+  - model_name: free-fast
+    litellm_params:
+      model: groq/llama-3.3-70b-versatile
+      api_key: os.environ/GROQ_API_KEY
+    model_info: {tier: "1-free", rpm: 30, tpm: 14400}
+
+  - model_name: free-fast
+    litellm_params:
+      model: groq/llama-3.1-8b-instant
+      api_key: os.environ/GROQ_API_KEY
+    model_info: {tier: "1-free", rpm: 30, tpm: 6000}
+
+  - model_name: free-general
+    litellm_params:
+      model: openrouter/mistralai/mistral-7b-instruct:free
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+    model_info: {tier: "1-free", rpm: 20}
+
+  - model_name: free-longcontext
+    litellm_params:
+      model: gemini/gemini-2.0-flash-lite
+      api_key: os.environ/GOOGLE_API_KEY
+    model_info: {tier: "1-free", rpm: 30, tpm: 1000000}
+
+  # ── TIER 2: budget APIs (Layer 2 prompt caching active) ──────────
+
+  # DeepSeek: automatic prompt caching (activates at 64 tokens)
+  - model_name: budget-general
+    litellm_params:
+      model: deepseek/deepseek-chat
+      api_key: os.environ/DEEPSEEK_API_KEY
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 60}
+
+  - model_name: budget-reasoning
+    litellm_params:
+      model: deepseek/deepseek-reasoner
+      api_key: os.environ/DEEPSEEK_API_KEY
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 30}
+
+  # Gemini: implicit caching, no config needed (75% discount on cached reads)
+  - model_name: budget-fast
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: os.environ/GOOGLE_API_KEY
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 1000, tpm: 1000000}
+
+  # Claude: explicit cache_control auto-injected on system messages
+  # (90% savings on cache reads; min ~2048 tokens for Haiku 4.5)
+  - model_name: budget-claude
+    litellm_params:
+      model: anthropic/claude-haiku-4-5-20251001
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 50}
+
+  # OpenAI: automatic prefix caching for inputs >1024 tokens (50% discount)
+  - model_name: budget-openai
+    litellm_params:
+      model: openai/gpt-4o-mini
+      api_key: os.environ/OPENAI_API_KEY
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 500}
+
+  - model_name: budget-multilingual
+    litellm_params:
+      model: openai/moonshot-v1-128k
+      api_key: os.environ/KIMI_API_KEY
+      api_base: https://api.moonshot.cn/v1
+    model_info: {tier: "2-budget", rpm: 60}
+
+  # ── TIER 3: premium APIs ─────────────────────────────────────────
+
+  - model_name: premium-balanced
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+        - location: message
+          index: -1
+    model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 50}
+
+  - model_name: premium-openai
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: os.environ/OPENAI_API_KEY
+    model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 500}
+
+  - model_name: premium-gemini
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_key: os.environ/GOOGLE_API_KEY
+    model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 360, tpm: 1000000}
+
+  - model_name: premium-best
+    litellm_params:
+      model: anthropic/claude-opus-4-6
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+    model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 20}
+
+
+router_settings:
+  routing_strategy: "usage-based-routing-v2"
+  num_retries: 3
+  retry_after: 5
+  allowed_fails: 3
+  cooldown_time: 60
+  fallbacks:
+    - local-fast:       ["free-fast", "budget-general"]
+    - local-always-on:  ["free-fast", "budget-fast"]
+    - free-fast:        ["budget-general", "budget-fast"]
+    - free-general:     ["budget-general", "budget-fast"]
+    - free-longcontext: ["budget-fast", "premium-gemini"]
+    - budget-general:   ["budget-fast", "premium-balanced"]
+    - budget-reasoning: ["premium-balanced"]
+    - budget-fast:      ["premium-balanced", "premium-openai"]
+  context_window_fallbacks:
+    - local-fast:       ["free-longcontext", "budget-fast", "premium-gemini"]
+    - local-always-on:  ["free-longcontext", "budget-fast"]
+    - budget-general:   ["free-longcontext", "budget-fast", "premium-gemini"]
+
+
+# Layer 1: response cache. Dual backend — Redis (exact) + Qdrant (semantic).
+litellm_settings:
+  cache: true
+  cache_params:
+    type: qdrant-semantic
+    qdrant_api_base: http://qdrant:6333
+    qdrant_collection_name: dispatch_response_cache
+    qdrant_semantic_cache_embedding_model: local-embed
+    qdrant_quantization_config: binary
+    qdrant_semantic_cache_vector_size: 768
+    similarity_threshold: 0.92
+    supported_call_types: ["completion", "acompletion", "embedding"]
+    redis_host: redis
+    redis_port: 6379
+    ttl: 3600
+
+  max_budget: 50
+  budget_duration: "1mo"

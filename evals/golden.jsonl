@@ -1,0 +1,11 @@
+# Routing checks — validate classification + tier selection, no providers needed
+{"id": "route-coding-local", "check": "route", "prompt": "Write a Python function to merge two sorted lists", "expect_task": "coding", "expect_group_prefix": "local"}
+{"id": "route-fastchat-local", "check": "route", "prompt": "hi there", "expect_task": "fast_chat", "expect_group_prefix": "local"}
+{"id": "route-multilingual", "check": "route", "prompt": "translate this sentence in spanish for me please", "expect_task": "multilingual"}
+{"id": "route-math", "check": "route", "prompt": "solve this equation and show the derivative steps", "expect_task": "math"}
+{"id": "route-quality-premium", "check": "route", "prompt": "I need the most accurate, production-ready analysis of this design", "expect_task": "quality", "expect_group_prefix": "premium"}
+{"id": "route-reasoning", "check": "route", "prompt": "analyze the trade-offs between event sourcing and CRUD architecture", "expect_task": "reasoning"}
+# Inference checks — require a live stack (skipped under --routing-only)
+{"id": "infer-code-shape", "check": "response_contains", "prompt": "Write a Python function named add_two that returns the sum of two integers. Include the function definition.", "contains": ["def add_two", "return"]}
+{"id": "infer-factual", "check": "response_contains", "prompt": "In one short sentence: what does HTTP status code 404 mean?", "contains": ["not found"]}
+{"id": "infer-regulated-local", "check": "response_contains", "prompt": "Repeat the word CONFIRMED once and nothing else.", "contains": ["confirmed"], "classification": "regulated"}
