@@ -18,26 +18,25 @@
 
 ## Executive Summary
 
-Enterprise AI adoption faces a fundamental trilemma: **exponential cloud inference costs**, **compliance and data sovereignty risks**, and **uncontrolled autonomous agent blast radius**. Frontier models ($15–$30/M tokens) are routinely squandered on deterministic or routine tasks, while sensitive corporate intellectual property and regulated PII/PHI risk cloud leakage.
+Enterprise AI adoption is constrained by a fundamental trilemma: **unpredictable cloud inference expenses**, **data sovereignty & regulatory compliance risks**, and **uncontrolled autonomous agent blast radius**. Frontier models ($15–$75/M tokens) are frequently squandered on deterministic or routine tasks, while sensitive corporate intellectual property and regulated PII/PHI risk cloud leakage.
 
-**DISPATCH** is an open-source, production-grade LLM routing gateway and governance control plane. It sits transparently between your applications (speaking OpenAI, Anthropic, or Google Gemini wire formats) and backend inference providers, enforcing a strict **local-first, cost-optimized, and policy-governed execution model**:
+**DISPATCH** is an open-source, production-grade LLM routing gateway and governance control plane. It operates transparently between your client applications (speaking native OpenAI, Anthropic, or Google Gemini wire formats) and backend inference providers, enforcing a strict **local-first, cost-optimized, and policy-governed execution model**:
 
 * **70%–90% Cloud Spend Reduction (FinOps):** Automatically routes requests through a 4-tier cost escalation ladder—exhausting on-premise silicon ($0) and free API quotas ($0) before touching budget APIs (pennies/M tokens) or premium frontier models.
-* **Provable Data Sovereignty (Zero Cloud Egress):** Built-in architectural control plane clamps regulated or sensitive data to local hardware via hardware-enforced routing ceilings and cryptographic audit stamps.
-* **Bayesian Agent Trust Governance:** A continuous Beta-distribution ledger dynamically scores autonomous agent reliability, tightening cost ceilings and requiring human approvals if anomalous behavior or policy violations occur.
-* **3-Layer Additive Caching:** Combines vector semantic caching, provider prompt prefix caching (50–90% prefill savings), and GPU vLLM prefix caching.
-* **Local-First Infinite Memory & Map-Reduce Context:** Preserves cross-session episodic and semantic memory locally using SQLite FTS5 and Qdrant, compressing 10M+ token corpora on local hardware at zero API cost.
-
-Built on the battle-tested [LiteLLM](https://github.com/BerriAI/litellm) proxy engine (handling load balancing, retries, and provider protocol drivers) with a specialized dispatcher acting as the enterprise brain and governance boundary.
+* **Provable Data Sovereignty (Zero Cloud Egress):** Built-in architectural control plane locks regulated or sensitive data to local hardware via hardware-enforced routing ceilings and cryptographic audit stamps.
+* **Bayesian Agent Trust Governance:** A continuous Beta-distribution ledger dynamically scores autonomous agent reliability, tightening rate limits and requiring human approvals if anomalous behavior or policy violations occur.
+* **Dynamic Pre-Flight Cost Guardrails:** Real-time token and USD cost estimation with automated fallback downgrades before requests reach cloud providers.
+* **Cognitive Semantic Routing & Frontier Fleet:** Intent classification with confidence scoring across frontier models including **Claude 3.7 Sonnet**, **OpenAI o1 / o3-mini / GPT-4o**, **DeepSeek R1 / V3**, **Gemini 2.5 Pro / Flash**, and **Qwen 2.5 72B**.
+* **Self-Healing Memory & Provenance:** Local-first episodic and semantic memory with automated contradiction detection, supersession, and 10M+ token hierarchical map-reduce compression at zero API cost.
 
 ---
 
 ## Architecture Overview
 
-DISPATCH implements a clean **Control Plane / Data Plane separation**:
+DISPATCH implements a strict **Control Plane / Data Plane separation**:
 
-* **Control Plane (DISPATCH :8080):** Task classification, budget gating, residency tagging, autonomy boundary enforcement, Bayesian trust ledger updates, context assembly, and document map-reduce compression.
-* **Data Plane (LiteLLM :4000):** Connection pooling, provider adapters, upstream failover, cooldowns, load balancing, and raw token streaming.
+* **Control Plane (DISPATCH Gateway :8080):** Cognitive task classification, budget gating, residency tagging, autonomy boundary enforcement, Bayesian trust ledger updates, context assembly, memory contradiction detection, and document map-reduce compression.
+* **Data Plane (LiteLLM Proxy :4000):** Connection pooling, provider protocol adapters, upstream failover, cooldowns, load balancing, prompt prefix caching, and raw token streaming.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -50,8 +49,8 @@ DISPATCH implements a clean **Control Plane / Data Plane separation**:
 │                       DISPATCH GATEWAY & CONTROL PLANE (:8080)                  │
 │                                                                                 │
 │   ┌───────────────────────┐  ┌───────────────────────┐  ┌───────────────────┐   │
-│   │   Protocol Adapters   │  │ Task & Routing Engine │  │ Autonomy Boundary │   │
-│   │ (OpenAI/Claude/Gemini)│  │ (Regex + Token Context│  │ (Sovereignty Gate)│   │
+│   │   Protocol Adapters   │  │ Cognitive Semantic    │  │ Autonomy Boundary │   │
+│   │ (OpenAI/Claude/Gemini)│  │ Router & Cost Engine  │  │ (Sovereignty Gate)│   │
 │   └───────────┬───────────┘  └───────────┬───────────┘  └─────────┬─────────┘   │
 │               │                          │                        │             │
 │   ┌───────────▼───────────┐  ┌───────────▼───────────┐  ┌─────────▼─────────┐   │
@@ -72,9 +71,9 @@ DISPATCH implements a clean **Control Plane / Data Plane separation**:
  │   Local   │         │ Free API  │         │  Budget   │         │  Premium  │
  │ Hardware  │         │  Quotas   │         │ Cloud API │         │ Frontier  │
  │ (vLLM,    │         │ (Groq,    │         │(DeepSeek, │         │ (Claude   │
- │  Ollama,  │         │  Gemini   │         │ Flash,    │         │  Opus/    │
- │LM Studio) │         │  Free,    │         │ Haiku,    │         │  Sonnet,  │
- │           │         │OpenRouter)│         │ 4o-mini)  │         │  GPT-4o)  │
+ │  Ollama,  │         │  Gemini   │         │ Flash,    │         │  3.7 /    │
+ │LM Studio) │         │  Free,    │         │ Haiku,    │         │  o1 / o3, │
+ │           │         │OpenRouter)│         │ o3-mini)  │         │  GPT-4o)  │
  │  $0 / tok │         │  $0 / tok │         │ pennies/M │         │ dollars/M │
  └───────────┘         └───────────┘         └───────────┘         └───────────┘
 ```
@@ -83,20 +82,21 @@ DISPATCH implements a clean **Control Plane / Data Plane separation**:
 flowchart TD
     Client["Client SDK Request (OpenAI / Anthropic / Gemini)"] --> Auth{"Bearer / API Key Auth"}
     Auth -- Unauthorized --> Err401["HTTP 401 Unauthorized"]
-    Auth -- Authorized --> Classify["Task Classifier & Token Evaluator"]
+    Auth -- Authorized --> CostPreFlight["Pre-Flight Token & Cost Estimation"]
     
+    CostPreFlight --> Classify["Cognitive Semantic Intent Classifier"]
     Classify --> MemoryCheck{"Session / Memory Active?"}
     MemoryCheck -- Yes --> InjectContext["Context Assembly (Hot + Warm + Cold Facts)"]
     MemoryCheck -- No --> BoundaryGate
     InjectContext --> BoundaryGate
     
     BoundaryGate{"Autonomy Boundary Gate"}
-    BoundaryGate -- "Cost Cap Exceeded / Action Denied" --> Escalate["HTTP 403 Forbidden + Escalation Audit Stamp"]
-    BoundaryGate -- "Regulated Data" --> ClampLocal["Clamp Ceiling to Tier 0 (Local Hardware Only)"]
+    BoundaryGate -- "Cost Cap Exceeded / Action Denied" --> Escalate["HTTP 403 Escalation + Webhook Alert"]
+    BoundaryGate -- "Regulated Data" --> ClampLocal["Clamp Ceiling to Tier 0 (Local Silicon Only)"]
     BoundaryGate -- "Approved" --> ModelSelect["Model Group Selection"]
     ClampLocal --> ModelSelect
     
-    ModelSelect --> BudgetCheck{"Monthly Budget Remaining?"}
+    ModelSelect --> BudgetCheck{"Monthly Spend < Budget Cap?"}
     BudgetCheck -- "100% Exhausted" --> ForceTier0["Force Fallback to Tier 0 (Local Only)"]
     BudgetCheck -- "Within Budget" --> LiteLLM["Forward to LiteLLM Proxy Engine"]
     ForceTier0 --> LiteLLM
@@ -105,7 +105,7 @@ flowchart TD
     CacheCheck -- Yes --> ReturnCache["Return Exact / Semantic Response"]
     CacheCheck -- No --> ProviderDispatch["Dispatch to Provider Backend (Tier 0 -> 1 -> 2 -> 3)"]
     
-    ProviderDispatch --> PostProcess["Record Metrics + Update Trust Ledger + Background Fact Extraction"]
+    ProviderDispatch --> PostProcess["Record Metrics + Update Trust Ledger + Memory Sync"]
     ReturnCache --> PostProcess
     PostProcess --> ClientResponse["Return Response + _dispatch Metadata"]
 ```
@@ -114,16 +114,16 @@ flowchart TD
 
 ## Core Capabilities
 
-### 1. The 4-Tier Cost Escalation Engine
+### 1. The 4-Tier Cost Escalation Engine & Frontier Fleet
 
 DISPATCH maps every incoming request into a deterministic tier hierarchy. Expensive providers are never called if a lower tier can satisfy the task requirements.
 
 | Tier | Category | Backends & Models | Marginal Cost | Primary Use Case |
 |---|---|---|---|---|
-| **Tier 0** | **Local Hardware** | vLLM (Qwen2.5-Coder), Ollama (Phi-4-mini, Qwen2.5:14b), LM Studio (Apple Silicon MLX) | **$0.00** | Code generation, embeddings, semantic cache lookups, document summarization, regulated PII/PHI |
+| **Tier 0** | **Local Hardware** | vLLM (Qwen2.5-Coder-7B), Ollama (Phi-4-mini, Qwen2.5:14B), LM Studio | **$0.00** | Code generation, embeddings, semantic cache lookups, document summarization, regulated PII/PHI |
 | **Tier 1** | **Free API Quotas** | Groq (Llama-3.3-70B, Llama-3.1-8B), OpenRouter Free (Mistral-7B), Gemini Free (Flash-Lite 1M context) | **$0.00** | High-speed fast chat, burst capacity when local GPUs are saturated |
-| **Tier 2** | **Budget Cloud APIs** | DeepSeek (V3 Chat, R1 Reasoner), Gemini 2.0 Flash, Claude 3.5 Haiku, GPT-4o-mini, Kimi 128k | **~$0.07 – $1.00 / M tokens** | General reasoning, large context analysis, standard production workloads |
-| **Tier 3** | **Premium Frontier** | Claude 3.5 Sonnet, Claude Opus, OpenAI GPT-4o / o1 / o3, Gemini 2.5 Pro | **~$1.25 – $15.00 / M tokens** | Complex architecture, mission-critical legal/financial analysis, audited code review |
+| **Tier 2** | **Budget Cloud APIs** | DeepSeek (V3 Chat, R1 Reasoner), Gemini 2.0/2.5 Flash, Claude 3.5 Haiku, OpenAI o3-mini, GPT-4o-mini, Qwen 2.5 72B | **~$0.07 – $1.00 / M tokens** | General reasoning, large context analysis, standard production workloads |
+| **Tier 3** | **Premium Frontier** | Claude 3.7 Sonnet, OpenAI o1 / GPT-4o, Gemini 2.5 Pro, Claude 3 Opus | **~$1.25 – $15.00 / M tokens** | Complex architecture, mission-critical legal/financial analysis, audited code review |
 
 * **Hard Monthly Cap:** When cumulative spend hits `MONTHLY_BUDGET_USD`, cloud routing automatically shuts down; all traffic degrades gracefully to Tier 0.
 * **Daily Soft Limit:** When daily burn exceeds `DAILY_SOFT_LIMIT_USD`, Tier 2/3 APIs are temporarily gated for non-essential traffic.
@@ -155,11 +155,13 @@ Configured via declarative YAML (`config/autonomy_boundary.yaml`), the autonomy 
   * `confidential`: Capped at Tier 2 (budget cloud).
   * `internal` / `public`: Allowed up to Tier 3.
 * **Blast-Radius Mitigation:** Hard per-request cost caps (`max_cost_per_request_usd`) and maximum payload sizes (`max_documents_chars`).
-* **Zero Silent Failures:** Over-limit requests or unauthorized tier escalations produce structured audit records and HTTP 403 escalations queryable via `/boundary/escalations`.
+* **Persistent Escalation Workflows:** Over-limit requests or unauthorized tier escalations produce structured audit records and HTTP 403 escalations.
+* **Automated Webhook Dispatcher:** Asynchronously dispatches structured JSON payloads and Slack Mrkdwn alert blocks to `DISPATCH_WEBHOOK_URL` / `SLACK_WEBHOOK_URL` upon escalation creation and resolution.
+* **Human-in-the-Loop Review:** Security administrators resolve pending escalations via `POST /boundary/escalations/{id}/verdict`, dynamically feeding decisions into the agent's Bayesian trust score.
 
 ---
 
-### 4. Bayesian Agent Trust Ledger
+### 4. Bayesian Agent Trust Ledger & Dynamic Rate Limiting
 
 As autonomous agents execute tools and make LLM calls, static role-based access control proves insufficient. DISPATCH implements a **continuous Bayesian Trust Engine** using a Beta distribution $\text{Beta}(\alpha, \beta)$ per `agent_id`:
 
@@ -167,60 +169,24 @@ $$\text{Trust Score} = \frac{\alpha}{\alpha + \beta}, \quad \text{Confidence} = 
 
 * **Asymmetric Penalization:** Bad evidence is penalized heavily ($\text{Weight} = 3.0 - 6.0\times$) while good evidence accrues conservatively ($\text{Weight} = 1.0\times$). Trust is slow to earn and rapid to lose.
 * **Exponential Half-Life Decay:** Evidence decays toward the neutral prior $(1.0, 1.0)$ with a 14-day half-life. Stale agents cannot rely on ancient good behavior.
-* **Dynamic Autonomy Tiers:**
-
-| Trust Tier | Score Range | Operational Effect |
-|---|---|---|
-| **Probation** | $< 0.40$ | Tiers above Tier 1 require manual human approval; per-request cost cap slashed to $0.2\times$. |
-| **Standard** | $0.40 – 0.79$ | Baseline organizational policy applies. |
-| **Trusted** | $\ge 0.80$ | Cost cap widened up to $2.0\times$ (clamped strictly by `hard_max_cost_per_request_usd`). |
+* **Trust-Tier Dynamic Rate Limiting:** Sliding-window rate limiter enforces elastic RPM quotas based on real-time agent trust:
+  * **Probation ($<0.40$):** Capped strictly at `10 RPM` to mitigate runaway tool loops or prompt injection; per-request cost cap slashed to $0.2\times$.
+  * **Standard ($0.40–0.79$):** Baseline organizational limit of `60 RPM`.
+  * **Trusted ($\ge 0.80$):** Expanded capacity up to `180 RPM`; cost cap widened up to $2.0\times$ (clamped strictly by `hard_max_cost_per_request_usd`).
 
 > **Key Invariant:** Trust can only *narrow* or *expand* elasticity within what data classification permits. A maximally trusted agent **can never** route `regulated` data off on-premise hardware.
 
 ---
 
-### 5. Local-First Memory Hierarchy & Context Map-Reduce
-
-* **Working Memory (Hot, 0ms):** In-process conversation turns for the active session.
-* **Episodic Memory (Warm, ~50ms):** Persisted conversation turns in SQLite (WAL mode). On session closure, conversation summaries are embedded into Qdrant to retrieve historical session context.
-* **Semantic Memory (Cold, ~200ms):** Durable facts (preferences, constraints, entities, skills) extracted in the background by a local model (`phi4-mini`) at $0.00$ cost. Retrieved via hybrid search: SQLite FTS5 (full-text keyword matching) $\cup$ Qdrant vector similarity.
-* **Context Map-Reduce Pipeline:** Ingests document corpora exceeding 10M+ tokens. Automatically chunks on paragraph boundaries, maps summaries in parallel across local models, and recursively reduces until the corpus fits the target model window.
-
----
-
-### 6. Dynamic Rate Limiting & Escalation Workflows (Phase 2)
-
-* **Trust-Tier Dynamic Rate Limiting:** Sliding-window rate limiter enforces elastic RPM quotas based on real-time agent trust:
-  * **Probation:** Capped strictly at `10 RPM` to mitigate runaway tool loops or malicious prompt attacks.
-  * **Standard:** Baseline organizational limit of `60 RPM`.
-  * **Trusted:** Expanded capacity up to `180 RPM`.
-  * Throttled requests emit standard HTTP 429 responses with `Retry-After`, `X-RateLimit-Limit`, and `X-RateLimit-Remaining` headers, tracked by the `dispatch_rate_limit_throttles_total` Prometheus counter.
-* **Persistent Escalation Lifecycle & Human-in-the-Loop Review:**
-  * Denied actions and tier escalations are durably recorded in the `boundary_escalations` table (`pending`, `approved`, `rejected`).
-  * Security leads review and resolve escalations via `POST /boundary/escalations/{id}/verdict`:
-    ```bash
-    curl -X POST http://localhost:8080/boundary/escalations/esc_abc123/verdict \
-      -H "Content-Type: application/json" \
-      -d '{"verdict": "approved", "reviewer": "sec-ops", "reason": "Pre-authorized quarterly migration"}'
-    ```
-  * Resolving an escalation automatically updates the Bayesian trust ledger: an approved escalation records `human_approve` (raising the agent's score), while a rejection records `human_reject` (penalizing the agent's score).
-* **Automated Webhook & Slack Escalation Dispatcher:**
-  * Asynchronously dispatches structured JSON payloads and Slack Mrkdwn alert blocks to `DISPATCH_WEBHOOK_URL` / `SLACK_WEBHOOK_URL` upon escalation creation and resolution.
-* **Multi-Tenant Enterprise Tagging:** Supports `organization_id` and `project_id` via request body or HTTP headers (`X-Organization-Id`, `X-Project-Id`), stamped directly into the cryptographic audit record for FinOps department-level chargeback.
-
----
-
-### 7. Cognitive & Semantic Task Router (Phase 3)
+### 5. Cognitive & Semantic Task Router (Phase 3)
 
 * **Zero-Shot Intent Classification:** Evaluates input prompts against a multi-archetype cognitive embedding and term-vector space (`coding`, `reasoning`, `math`, `long_context`, `multilingual`, `quality`, `fast_chat`, `governance`, `retrieval`, `general`).
 * **Confidence & Justification Metrics:** Every routing decision outputs a normalized confidence score and human-interpretable routing justification attached to `_dispatch` metadata.
-* **OpenRouter & Frontier Model Interoperability:**
-  * First-class support for OpenRouter routes and frontier models including **Claude 3.7 Sonnet**, **DeepSeek R1 / V3**, **Qwen 2.5 72B**, **Llama 3.3 70B**, and **Gemini 2.5 Pro**.
-  * Auto-injects standard enterprise OpenRouter headers (`HTTP-Referer`, `X-Title`).
+* **OpenRouter & Frontier Model Interoperability:** First-class support for OpenRouter routes and frontier models (**Claude 3.7 Sonnet**, **OpenAI o1 / o3-mini**, **DeepSeek R1 / V3**, **Qwen 2.5 72B**, **Llama 3.3 70B**, **Gemini 2.5 Pro**) with automatic enterprise headers (`HTTP-Referer`, `X-Title`).
 
 ---
 
-### 8. Dynamic Pre-Flight Cost Engine & Budget Guardrails (Phase 3)
+### 6. Dynamic Pre-Flight Cost Engine & Budget Guardrails (Phase 3)
 
 * **Pre-Flight Token & USD Cost Projections:** Exact estimation of input and bounded output tokens before initiating LiteLLM network calls.
 * **Automated Blast-Radius Downgrades:** If a request's projected cost exceeds `max_cost_per_request_usd`, DISPATCH automatically identifies and substitutes an optimal, cost-effective fallback tier (e.g. `premium-openai` $\to$ `budget-openai` or `local-fast`), protecting monthly budgets from accidental overruns.
@@ -228,10 +194,13 @@ $$\text{Trust Score} = \frac{\alpha}{\alpha + \beta}, \quad \text{Confidence} = 
 
 ---
 
-### 9. Self-Healing Memory & Contradiction Supersession (Phase 3)
+### 7. Local-First Memory Hierarchy & Self-Healing Contradiction Supersession (Phase 3)
 
-* **Automated Contradiction Resolution:** Detects conflicting assertions or updated preferences (e.g., "dark mode" $\to$ "light mode") for an entity key.
-* **Provenance Tracking & Lineage:** Superseded facts are automatically retired (`valid=0, superseded_by=<id>`) and logged in the `contradictions` audit table, while retaining complete historical lineage queryable via `GET /memory/facts/{id}/provenance`.
+* **Working Memory (Hot, 0ms):** In-process conversation turns for the active session.
+* **Episodic Memory (Warm, ~50ms):** Persisted conversation turns in SQLite (WAL mode). On session closure, conversation summaries are embedded into Qdrant to retrieve historical session context.
+* **Semantic Memory (Cold, ~200ms):** Durable facts (preferences, constraints, entities, skills) extracted in the background by a local model (`phi4-mini`) at $0.00$ cost. Retrieved via hybrid search: SQLite FTS5 (full-text keyword matching) $\cup$ Qdrant vector similarity.
+* **Automated Contradiction Resolution:** Detects conflicting assertions or updated preferences (e.g., "dark mode" $\to$ "light mode") for an entity key. Superseded facts are automatically retired (`valid=0, superseded_by=<id>`) and logged in the `contradictions` audit table, while retaining complete historical lineage queryable via `GET /memory/facts/{id}/provenance`.
+* **Context Map-Reduce Pipeline:** Ingests document corpora exceeding 10M+ tokens. Automatically chunks on paragraph boundaries, maps summaries in parallel across local models, and recursively reduces until the corpus fits the target model window.
 
 ---
 
@@ -457,7 +426,7 @@ Results append to `evals/results/history.jsonl` and output formatted executive s
   * Cognitive zero-shot semantic intent classifier and task router (`dispatcher/semantic_router.py`).
   * Dynamic pre-flight cost estimation and budget guardrails (`dispatcher/cost_engine.py`).
   * Automated memory contradiction detection, supersession, and provenance tracking (`dispatcher/memory_engine.py`).
-  * OpenRouter & frontier model provider configurations (Claude 3.7 Sonnet, DeepSeek R1/V3, Qwen 2.5 72B, Llama 3.3 70B, Gemini 2.5 Pro).
+  * OpenRouter & frontier model provider configurations (Claude 3.7 Sonnet, OpenAI o1/o3-mini, DeepSeek R1/V3, Qwen 2.5 72B, Llama 3.3 70B, Gemini 2.5 Pro).
   * Multi-dimensional evaluation harness with automated Markdown reporting (`evals/harness.py`).
 
 ---

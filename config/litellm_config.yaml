@@ -82,7 +82,7 @@ model_list:
 
   # ── TIER 2: budget APIs (Layer 2 prompt caching active) ──────────
 
-  # DeepSeek: automatic prompt caching (activates at 64 tokens)
+  # DeepSeek V3: automatic prompt caching (activates at 64 tokens)
   - model_name: budget-general
     litellm_params:
       model: deepseek/deepseek-chat
@@ -100,6 +100,7 @@ model_list:
         X-Title: "DISPATCH Gateway"
     model_info: {tier: "2-budget", rpm: 60}
 
+  # DeepSeek R1 Reasoning Model
   - model_name: budget-reasoning
     litellm_params:
       model: deepseek/deepseek-reasoner
@@ -117,14 +118,14 @@ model_list:
         X-Title: "DISPATCH Gateway"
     model_info: {tier: "2-budget", rpm: 30}
 
-  # Gemini: implicit caching, no config needed (75% discount on cached reads)
+  # Gemini 2.0 / 2.5 Flash: implicit caching (75% discount on cached reads)
   - model_name: budget-fast
     litellm_params:
       model: gemini/gemini-2.0-flash
       api_key: os.environ/GOOGLE_API_KEY
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 1000, tpm: 1000000}
 
-  # Claude: explicit cache_control auto-injected on system messages
+  # Claude 3.5 Haiku: explicit cache_control auto-injected on system messages
   - model_name: budget-claude
     litellm_params:
       model: anthropic/claude-3-5-haiku-20241022
@@ -134,12 +135,19 @@ model_list:
           role: system
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 50}
 
-  # OpenAI: automatic prefix caching for inputs >1024 tokens (50% discount)
+  # OpenAI GPT-4o Mini
   - model_name: budget-openai
     litellm_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 500}
+
+  # OpenAI o3-mini (Reasoning)
+  - model_name: budget-reasoning
+    litellm_params:
+      model: openai/o3-mini
+      api_key: os.environ/OPENAI_API_KEY
+    model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 100}
 
   # Qwen 2.5 72B via OpenRouter
   - model_name: budget-multilingual
@@ -177,18 +185,28 @@ model_list:
         X-Title: "DISPATCH Gateway"
     model_info: {tier: "3-premium", rpm: 50}
 
+  # OpenAI GPT-4o
   - model_name: premium-openai
     litellm_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
     model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 500}
 
+  # OpenAI o1 Frontier Reasoning
+  - model_name: premium-openai
+    litellm_params:
+      model: openai/o1
+      api_key: os.environ/OPENAI_API_KEY
+    model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 50}
+
+  # Google Gemini 2.5 Pro (Frontier Multimodal & Code)
   - model_name: premium-gemini
     litellm_params:
       model: gemini/gemini-2.5-pro
       api_key: os.environ/GOOGLE_API_KEY
     model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 360, tpm: 1000000}
 
+  # Claude 3 Opus
   - model_name: premium-best
     litellm_params:
       model: anthropic/claude-3-opus-20240229

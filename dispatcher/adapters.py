@@ -50,6 +50,8 @@ def map_model_to_group(model: str) -> str:
         return "premium-gemini"
     if "gemini" in cleaned:  # flash / flash-lite
         return "budget-fast"
+    if "o3-mini" in cleaned:
+        return "budget-reasoning"
     if "gpt-4o-mini" in cleaned:
         return "budget-openai"
     if "gpt" in cleaned or cleaned.startswith("o1") or cleaned.startswith("o3"):
