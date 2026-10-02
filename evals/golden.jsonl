@@ -5,7 +5,17 @@
 {"id": "route-math", "check": "route", "prompt": "solve this equation and show the derivative steps", "expect_task": "math"}
 {"id": "route-quality-premium", "check": "route", "prompt": "I need the most accurate, production-ready analysis of this design", "expect_task": "quality", "expect_group_prefix": "premium"}
 {"id": "route-reasoning", "check": "route", "prompt": "analyze the trade-offs between event sourcing and CRUD architecture", "expect_task": "reasoning"}
-# Inference checks — require a live stack (skipped under --routing-only)
+
+# Sovereignty & Data Governance checks
+{"id": "sov-regulated-tier0", "check": "sovereignty", "classification": "regulated", "model": "local-fast", "expect_allowed": true}
+{"id": "sov-regulated-deny-cloud", "check": "sovereignty", "classification": "regulated", "model": "premium-openai", "expect_allowed": false}
+{"id": "sov-confidential-tier2", "check": "sovereignty", "classification": "confidential", "model": "budget-general", "expect_allowed": true}
+
+# Dynamic Pre-Flight Cost Engine checks
+{"id": "cost-free-local", "check": "cost_limit", "model": "local-fast", "messages": [{"role": "user", "content": "hello"}], "expect_max_cost": 0.00}
+{"id": "cost-premium-boundary", "check": "cost_limit", "model": "premium-balanced", "messages": [{"role": "user", "content": "analyze this entire repo"}], "expect_max_cost": 0.50}
+
+# Inference checks — require a live stack (skipped under --routing-only or offline)
 {"id": "infer-code-shape", "check": "response_contains", "prompt": "Write a Python function named add_two that returns the sum of two integers. Include the function definition.", "contains": ["def add_two", "return"]}
 {"id": "infer-factual", "check": "response_contains", "prompt": "In one short sentence: what does HTTP status code 404 mean?", "contains": ["not found"]}
 {"id": "infer-regulated-local", "check": "response_contains", "prompt": "Repeat the word CONFIRMED once and nothing else.", "contains": ["confirmed"], "classification": "regulated"}

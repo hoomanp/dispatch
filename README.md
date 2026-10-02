@@ -204,7 +204,34 @@ $$\text{Trust Score} = \frac{\alpha}{\alpha + \beta}, \quad \text{Confidence} = 
       -d '{"verdict": "approved", "reviewer": "sec-ops", "reason": "Pre-authorized quarterly migration"}'
     ```
   * Resolving an escalation automatically updates the Bayesian trust ledger: an approved escalation records `human_approve` (raising the agent's score), while a rejection records `human_reject` (penalizing the agent's score).
+* **Automated Webhook & Slack Escalation Dispatcher:**
+  * Asynchronously dispatches structured JSON payloads and Slack Mrkdwn alert blocks to `DISPATCH_WEBHOOK_URL` / `SLACK_WEBHOOK_URL` upon escalation creation and resolution.
 * **Multi-Tenant Enterprise Tagging:** Supports `organization_id` and `project_id` via request body or HTTP headers (`X-Organization-Id`, `X-Project-Id`), stamped directly into the cryptographic audit record for FinOps department-level chargeback.
+
+---
+
+### 7. Cognitive & Semantic Task Router (Phase 3)
+
+* **Zero-Shot Intent Classification:** Evaluates input prompts against a multi-archetype cognitive embedding and term-vector space (`coding`, `reasoning`, `math`, `long_context`, `multilingual`, `quality`, `fast_chat`, `governance`, `retrieval`, `general`).
+* **Confidence & Justification Metrics:** Every routing decision outputs a normalized confidence score and human-interpretable routing justification attached to `_dispatch` metadata.
+* **OpenRouter & Frontier Model Interoperability:**
+  * First-class support for OpenRouter routes and frontier models including **Claude 3.7 Sonnet**, **DeepSeek R1 / V3**, **Qwen 2.5 72B**, **Llama 3.3 70B**, and **Gemini 2.5 Pro**.
+  * Auto-injects standard enterprise OpenRouter headers (`HTTP-Referer`, `X-Title`).
+
+---
+
+### 8. Dynamic Pre-Flight Cost Engine & Budget Guardrails (Phase 3)
+
+* **Pre-Flight Token & USD Cost Projections:** Exact estimation of input and bounded output tokens before initiating LiteLLM network calls.
+* **Automated Blast-Radius Downgrades:** If a request's projected cost exceeds `max_cost_per_request_usd`, DISPATCH automatically identifies and substitutes an optimal, cost-effective fallback tier (e.g. `premium-openai` $\to$ `budget-openai` or `local-fast`), protecting monthly budgets from accidental overruns.
+* **Cost Inspection Endpoint (`POST /dispatch/cost-estimate`):** Dry-run token volume, input/output cost breakdown, and free-tier qualification.
+
+---
+
+### 9. Self-Healing Memory & Contradiction Supersession (Phase 3)
+
+* **Automated Contradiction Resolution:** Detects conflicting assertions or updated preferences (e.g., "dark mode" $\to$ "light mode") for an entity key.
+* **Provenance Tracking & Lineage:** Superseded facts are automatically retired (`valid=0, superseded_by=<id>`) and logged in the `contradictions` audit table, while retaining complete historical lineage queryable via `GET /memory/facts/{id}/provenance`.
 
 ---
 
@@ -219,7 +246,7 @@ from openai import OpenAI
 client = OpenAI(base_url="http://localhost:8080/v1", api_key="sk-dispatch-key")
 
 response = client.chat.completions.create(
-    model="auto",  # Automatic task classification & tier routing
+    model="auto",  # Cognitive task classification & tier routing
     messages=[{"role": "user", "content": "Implement distributed consensus in Rust"}],
     extra_body={
         "classification": "confidential",
@@ -242,7 +269,7 @@ from anthropic import Anthropic
 client = Anthropic(base_url="http://localhost:8080", api_key="sk-dispatch-key")
 
 response = client.messages.create(
-    model="claude-sonnet-4-6",  # Maps directly to Tier 3 premium-balanced
+    model="claude-3.7-sonnet",  # Maps directly to Tier 3 premium-balanced
     max_tokens=1024,
     messages=[{"role": "user", "content": "Review this cryptographic protocol"}],
 )
@@ -334,7 +361,8 @@ docker compose --profile observability up -d
 | `POST` | `/v1beta/models/{model}:generateContent` | Google Gemini API protocol adapter. |
 | `POST` | `/v1/sessions` | Create a stateful memory session with optional title. |
 | `DELETE` | `/v1/sessions/{id}` | Close session; triggers asynchronous local fact extraction. |
-| `POST` | `/dispatch/classify` | Dry-run routing explanation (task classification & group chain). |
+| `POST` | `/dispatch/classify` | Cognitive routing explanation (task classification, confidence & cost estimate). |
+| `POST` | `/dispatch/cost-estimate` | Pre-flight token and USD cost estimation with downgrade recommendation. |
 | `GET` | `/dispatch/tiers` | Health, spend status, and gating state across Tiers 0–3. |
 | `GET` | `/trust/{agent_id}` | Bayesian trust snapshot, confidence, and audit trail for an agent. |
 | `GET` | `/trust` | Global trust leaderboard sorted by recent activity. |
@@ -343,6 +371,9 @@ docker compose --profile observability up -d
 | `GET` | `/boundary/escalations` | List escalation records (supports `?status=pending` or `?status=approved`). |
 | `POST` | `/boundary/escalations/{id}/verdict` | Review and resolve a pending escalation (`approved` or `rejected`) with Bayesian trust update. |
 | `GET` | `/memory/stats` | Memory engine metrics across hot, warm, and cold tiers. |
+| `GET` | `/memory/facts` | List active semantic facts (supports `?category=` and `?include_superseded=true`). |
+| `GET` | `/memory/facts/{id}/provenance` | Retrieve fact lineage, supersessions, and contradiction events. |
+| `GET` | `/memory/contradictions` | List history of detected memory contradictions and updates. |
 | `POST` | `/memory/search` | Search semantic memory using hybrid FTS5 and vector retrieval. |
 | `POST` | `/context/preview` | Preview hierarchical map-reduce compression plan for massive docs. |
 | `GET` | `/metrics` | Prometheus metrics scrape endpoint. |
@@ -374,17 +405,23 @@ Set `OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces` to capture end-to
 
 ## Continuous Evaluation & Regression Harness
 
-DISPATCH includes an automated regression harness (`evals/harness.py`) designed for CI/CD gates and live production drift detection:
+DISPATCH includes an enterprise evaluation & benchmarking harness (`evals/harness.py`):
 
 ```bash
-# Fast, CI-safe routing check (validates classifier & priority chains without live APIs)
+# CI-safe routing & sovereignty benchmark (no external providers needed)
 python evals/harness.py --routing-only
 
-# Full evaluation against a running staging/production cluster with pass-rate threshold
-python evals/harness.py --base-url http://localhost:8080 --threshold 0.85
+# Full multi-dimensional evaluation with Markdown report generation
+python evals/harness.py --base-url http://localhost:8080 --threshold 0.85 --report evals/results/report.md
 ```
 
-Evaluation records automatically append to `evals/results/history.jsonl`. A built-in unit test (`tests/test_evals.py`) ensures that classifier rule updates and golden test cases never drift out of sync.
+Evaluation checks cover:
+* **Route Conformance:** Validates cognitive task classification and model group selection.
+* **Sovereignty Boundary:** Verifies hardware isolation for `regulated` and `confidential` classifications.
+* **Dynamic Pre-Flight Cost:** Verifies token and USD budget cap enforcement.
+* **Response Quality:** Substring and assertion checking against live backends.
+
+Results append to `evals/results/history.jsonl` and output formatted executive summaries to `evals/results/report.md`.
 
 ---
 
@@ -392,7 +429,7 @@ Evaluation records automatically append to `evals/results/history.jsonl`. A buil
 
 | Dimension | Managed Gateway (OpenRouter) | LLM Proxy (LiteLLM Standalone) | Enterprise Router (DISPATCH) |
 |---|---|---|---|
-| **F**unctionality | Unified API, price floors, provider fallback | Load balancing, retries, 100+ providers | Task-aware 4-tier routing, local memory engine, >10M token map-reduce, Bayesian trust governance |
+| **F**unctionality | Unified API, price floors, provider fallback | Load balancing, retries, 100+ providers | Cognitive 4-tier routing, self-healing memory, >10M token map-reduce, Bayesian trust governance |
 | **I**ntegration | OpenAI wire format | OpenAI, Anthropic | OpenAI, Anthropic, Gemini, LangChain, MCP native tool server |
 | **D**ata Sovereignty | Data policies available, but prompts transit third-party infrastructure | Depends on hosting | Hard on-premise boundary: `regulated` classification physically cannot reach a cloud provider |
 | **P**rivacy | Vendor zero-data retention policies | Self-hosted data plane | 100% local memory extraction ($0.00 cost); sovereign audit trail retained entirely on-premise |
@@ -416,10 +453,12 @@ Evaluation records automatically append to `evals/results/history.jsonl`. A buil
   * Interactive escalation resolution endpoint (`POST /boundary/escalations/{id}/verdict`) with automated Bayesian trust updates.
   * Multi-tenant organization and project tagging (`organization_id`, `project_id`).
   * Webhook and Slack notification dispatcher for security review.
-* [ ] **Phase 3: Cognitive Routing & Self-Healing Memory (v1.3.0)**
-  * Hybrid regex + small local embedding classifier for edge-case prompt routing.
-  * Automated contradictory fact resolution in cold semantic memory.
-  * Fine-grained department-level FinOps cost allocation and chargeback reports.
+* [x] **Phase 3: Cognitive Routing & Self-Healing Memory (v1.3.0)**
+  * Cognitive zero-shot semantic intent classifier and task router (`dispatcher/semantic_router.py`).
+  * Dynamic pre-flight cost estimation and budget guardrails (`dispatcher/cost_engine.py`).
+  * Automated memory contradiction detection, supersession, and provenance tracking (`dispatcher/memory_engine.py`).
+  * OpenRouter & frontier model provider configurations (Claude 3.7 Sonnet, DeepSeek R1/V3, Qwen 2.5 72B, Llama 3.3 70B, Gemini 2.5 Pro).
+  * Multi-dimensional evaluation harness with automated Markdown reporting (`evals/harness.py`).
 
 ---
 

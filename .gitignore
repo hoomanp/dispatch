@@ -9,5 +9,5 @@ venv/
 node_modules/
 .DS_Store
 data/
-dispatch-oss.zip
+*.zip
 

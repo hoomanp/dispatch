@@ -23,7 +23,7 @@ import uuid
 # families onto DISPATCH model groups; anything unrecognized routes as auto.
 
 def map_model_to_group(model: str) -> str:
-    m = (model or "").lower()
+    m = (model or "").lower().strip()
     known_groups = {
         "local-fast", "local-always-on", "local-mobile", "local-embed",
         "free-fast", "free-general", "free-longcontext",
@@ -33,27 +33,36 @@ def map_model_to_group(model: str) -> str:
     }
     if m in known_groups:
         return m
-    if "opus" in m:
+
+    # Strip provider prefixes if given (e.g. openrouter/anthropic/claude-3.7-sonnet)
+    cleaned = m
+    for prefix in ("openrouter/", "openai/", "anthropic/", "gemini/", "deepseek/", "groq/", "ollama/"):
+        if cleaned.startswith(prefix):
+            cleaned = cleaned[len(prefix):]
+
+    if "opus" in cleaned:
         return "premium-best"
-    if "sonnet" in m:
+    if "sonnet" in cleaned or "claude-3.7" in cleaned or "claude-3-7" in cleaned:
         return "premium-balanced"
-    if "haiku" in m:
+    if "haiku" in cleaned:
         return "budget-claude"
-    if "gemini" in m and "pro" in m:
+    if "gemini" in cleaned and "pro" in cleaned:
         return "premium-gemini"
-    if "gemini" in m:  # flash / flash-lite
+    if "gemini" in cleaned:  # flash / flash-lite
         return "budget-fast"
-    if "gpt-4o-mini" in m:
+    if "gpt-4o-mini" in cleaned:
         return "budget-openai"
-    if "gpt" in m or m.startswith("o1") or m.startswith("o3"):
+    if "gpt" in cleaned or cleaned.startswith("o1") or cleaned.startswith("o3"):
         return "premium-openai"
-    if "deepseek" in m:
-        return "budget-reasoning" if ("reason" in m or "r1" in m) else "budget-general"
-    if "qwen" in m:
+    if "deepseek" in cleaned:
+        return "budget-reasoning" if ("reason" in cleaned or "r1" in cleaned) else "budget-general"
+    if "qwen" in cleaned and ("72b" in cleaned or "coder" in cleaned):
+        return "budget-multilingual" if "72b" in cleaned else "local-fast"
+    if "qwen" in cleaned:
         return "local-fast"
-    if "llama" in m:
+    if "llama-3.3" in cleaned or "llama-3.1" in cleaned or "llama" in cleaned:
         return "free-fast"
-    if "mistral" in m:
+    if "mistral" in cleaned:
         return "free-general"
     return "auto"
 

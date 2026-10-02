@@ -28,12 +28,14 @@ from pydantic import BaseModel
 from adapters import (anthropic_to_internal, gemini_to_internal,
                       internal_to_anthropic, internal_to_gemini)
 from autonomy_boundary import boundary, group_tier
+from cost_engine import cost_engine
 from memory_engine import ContextPipeline, Episode, memory
 from otel import set_routing_attributes
 from otel import setup as otel_setup
 from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge,
                                Histogram, generate_latest)
 from rate_limiter import rate_limiter
+from semantic_router import TASK_ROUTES, semantic_router
 from trust_ledger import trust
 
 logging.basicConfig(
@@ -121,11 +123,8 @@ TASK_ROUTES = {
 def classify_simple(prompt: str, context_tokens: int = 0) -> str:
     if context_tokens > 25000:
         return "long_context"
-    scores = {t: len(p.findall(prompt))
-              for t, p in PATTERNS.items() if p.search(prompt)}
-    if scores:
-        return max(scores, key=scores.get)
-    return "fast_chat" if len(prompt) < 80 else "general"
+    decision = semantic_router.classify(prompt)
+    return decision.task
 
 
 # ── HTTP client pooling ──────────────────────────────────────────────────────
@@ -337,10 +336,27 @@ async def chat(req: ChatRequest, request: Request):
             model_group, req.classification, task_route)
     tier = group_tier(model_group)
     docs_chars = sum(len(d) for d in (req.documents or []))
+
+    # Pre-flight token and cost estimation
+    cost_est = cost_engine.estimate(
+        messages=messages,
+        model_group=model_group,
+        max_tokens=req.max_tokens or 1024,
+        cached_input=not req.no_cache,
+        budget_ceiling_usd=float(boundary.policy.get("max_cost_per_request_usd", 0.50)),
+    )
+    if req.model == "auto" and cost_est.budget_exceeded and cost_est.recommended_group:
+        logger.info(
+            f"cost pre-flight: ${cost_est.estimated_cost_usd:.4f} exceeded cap; "
+            f"downgrading '{model_group}' to '{cost_est.recommended_group}'")
+        model_group = cost_est.recommended_group
+        tier = group_tier(model_group)
+
     decision = boundary.evaluate(
         action=f"inference.tier{tier}",
         classification=req.classification,
         model_group=model_group,
+        estimated_cost_usd=cost_est.estimated_cost_usd,
         documents_chars=docs_chars,
         agent_id=agent_id,
         organization_id=org_id,
@@ -415,6 +431,12 @@ async def chat(req: ChatRequest, request: Request):
         "latency_ms": latency_ms, "session_id": req.session_id,
         "memory_active": memory_active,
         "audit": decision.audit,
+        "cost_estimate": {
+            "input_tokens": cost_est.input_tokens,
+            "output_tokens": cost_est.output_tokens,
+            "estimated_cost_usd": cost_est.estimated_cost_usd,
+            "is_free": cost_est.is_free,
+        },
         "budget": {"monthly_spend": round(budget["monthly"], 4),
                    "monthly_limit": MONTHLY_BUDGET},
     }
@@ -496,20 +518,44 @@ async def recent_sessions():
 
 
 @app.get("/memory/facts")
-async def list_facts(category: Optional[str] = None, limit: int = 50):
-    facts = memory.store.list_facts(category=category, limit=limit)
-    return [{"fact": f.fact, "category": f.category,
-             "confidence": f.confidence} for f in facts]
+async def list_facts(category: Optional[str] = None, include_superseded: bool = False, limit: int = 50):
+    facts = memory.store.list_facts(category=category, include_superseded=include_superseded, limit=limit)
+    return [{
+        "id": f.id,
+        "fact": f.fact,
+        "category": f.category,
+        "confidence": f.confidence,
+        "valid": f.valid,
+        "superseded_by": f.superseded_by,
+        "entity_key": f.entity_key,
+        "created_at": f.created_at,
+        "updated_at": f.updated_at,
+    } for f in facts]
+
+
+@app.get("/memory/facts/{fact_id}/provenance")
+async def fact_provenance(fact_id: str):
+    prov = memory.store.get_fact_provenance(fact_id)
+    if not prov:
+        raise HTTPException(404, f"fact '{fact_id}' not found")
+    return prov
+
+
+@app.get("/memory/contradictions")
+async def memory_contradictions(limit: int = 50):
+    return {"contradictions": memory.store.get_contradictions(limit=limit)}
 
 
 @app.post("/memory/search")
 async def search_memory(request: Request):
     body = await request.json()
     query = body.get("query", "")
-    facts = memory.store.search_facts_fts(query, limit=10)
+    include_superseded = bool(body.get("include_superseded", False))
+    facts = memory.store.search_facts_fts(query, limit=10, include_superseded=include_superseded)
     return {"query": query,
-            "facts": [{"fact": f.fact, "category": f.category,
-                       "confidence": f.confidence} for f in facts]}
+            "facts": [{"id": f.id, "fact": f.fact, "category": f.category,
+                       "confidence": f.confidence, "valid": f.valid,
+                       "superseded_by": f.superseded_by} for f in facts]}
 
 
 @app.post("/context/preview")
@@ -533,13 +579,46 @@ async def explain_route(request: Request):
     body = await request.json()
     prompt = body.get("prompt", "")
     context_tokens = int(body.get("context_tokens", 0))
-    task = classify_simple(prompt, context_tokens)
+    semantic_res = semantic_router.classify(prompt)
+    task = "long_context" if context_tokens > 25000 else semantic_res.task
     budget = await get_budget()
     mg = select_model(task, budget,
                       strategy=body.get("strategy", "cost_first"))
-    return {"task": task, "model_group": mg,
-            "priority_chain": TASK_ROUTES.get(task, []),
-            "budget": {"monthly_spend": round(budget["monthly"], 4)}}
+    cost_est = cost_engine.estimate(
+        messages=[{"role": "user", "content": prompt}],
+        model_group=mg,
+        max_tokens=int(body.get("max_tokens", 1024)),
+    )
+    return {
+        "task": task,
+        "confidence": semantic_res.confidence,
+        "model_group": mg,
+        "priority_chain": TASK_ROUTES.get(task, []),
+        "justification": semantic_res.justification,
+        "features": semantic_res.features,
+        "estimated_cost_usd": cost_est.estimated_cost_usd,
+        "estimated_tokens": cost_est.total_tokens,
+        "budget": {"monthly_spend": round(budget["monthly"], 4)},
+    }
+
+
+@app.post("/dispatch/cost-estimate")
+async def cost_estimate_endpoint(request: Request):
+    body = await request.json()
+    messages = body.get("messages", [])
+    if not messages and "prompt" in body:
+        messages = [{"role": "user", "content": body["prompt"]}]
+    model_group = body.get("model", "budget-general")
+    max_tokens = int(body.get("max_tokens", 1024))
+    cached = bool(body.get("cached", False))
+    est = cost_engine.estimate(
+        messages=messages,
+        model_group=model_group,
+        max_tokens=max_tokens,
+        cached_input=cached,
+        budget_ceiling_usd=float(boundary.policy.get("max_cost_per_request_usd", 0.50)),
+    )
+    return est
 
 
 @app.get("/dispatch/tiers")

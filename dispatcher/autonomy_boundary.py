@@ -19,7 +19,10 @@ Decision from it.
 import json
 import logging
 import os
+import threading
 import time
+import urllib.request
+import urllib.error
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -156,6 +159,66 @@ class AutonomyBoundary:
                 base[k] = v
         return base
 
+    def _dispatch_webhook_notification(self, event_type: str, escalation: dict):
+        """Dispatch non-blocking webhook & Slack notifications for escalations."""
+        webhook_url = (os.getenv("DISPATCH_WEBHOOK_URL")
+                       or os.getenv("WEBHOOK_URL")
+                       or self.policy.get("webhook_url"))
+        slack_webhook_url = (os.getenv("SLACK_WEBHOOK_URL")
+                             or self.policy.get("slack_webhook_url"))
+
+        if not webhook_url and not slack_webhook_url:
+            return
+
+        def _post(url: str, payload: dict):
+            try:
+                data = json.dumps(payload).encode("utf-8")
+                req = urllib.request.Request(
+                    url, data=data,
+                    headers={"Content-Type": "application/json",
+                             "User-Agent": "DISPATCH-Gateway/1.0"}
+                )
+                with urllib.request.urlopen(req, timeout=5.0) as resp:
+                    pass
+            except Exception as e:
+                logger.warning(f"Webhook delivery to {url} failed: {e}")
+
+        # Generic JSON webhook
+        if webhook_url:
+            payload = {
+                "event": event_type,
+                "timestamp": time.time(),
+                "escalation": escalation,
+            }
+            threading.Thread(target=_post, args=(webhook_url, payload), daemon=True).start()
+
+        # Slack webhook with rich blocks
+        if slack_webhook_url:
+            esc_id = escalation.get("escalation_id", "unknown")
+            action = escalation.get("action", "")
+            agent_id = escalation.get("agent_id", "")
+            status = escalation.get("status", "")
+            reason = escalation.get("reason", "")
+            emoji = ":warning:" if event_type == "escalation_created" else (":white_check_mark:" if status == "approved" else ":x:")
+            title = f"{emoji} *DISPATCH Escalation: {event_type.replace('_', ' ').title()}*"
+            slack_payload = {
+                "text": f"{title} - {esc_id} ({action})",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {"type": "mrkdwn", "text": f"{title}\n*ID:* `{esc_id}` | *Agent:* `{agent_id}` | *Action:* `{action}`"}
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {"type": "mrkdwn", "text": f"*Status:*\n`{status.upper()}`"},
+                            {"type": "mrkdwn", "text": f"*Reason:*\n{reason}"},
+                        ]
+                    }
+                ]
+            }
+            threading.Thread(target=_post, args=(slack_webhook_url, slack_payload), daemon=True).start()
+
     def tier_ceiling(self, classification: str) -> int:
         ceilings = self.policy["classification_tier_ceiling"]
         return int(ceilings.get(
@@ -212,6 +275,7 @@ class AutonomyBoundary:
                              json.dumps(audit), esc["how_to_approve"], esc["created_at"]))
                 except Exception as e:
                     logger.warning(f"failed to persist escalation ({e})")
+            self._dispatch_webhook_notification("escalation_created", esc)
             return esc
 
         def deny(reason: str, escalation: dict | None = None) -> Decision:
@@ -336,6 +400,7 @@ class AutonomyBoundary:
         new_snap = self.trust.snapshot(agent_id)
         found["new_trust_score"] = new_snap.score
         found["new_trust_tier"] = new_snap.tier_name
+        self._dispatch_webhook_notification("escalation_resolved", found)
         return found
 
     def clamp_group_to_ceiling(self, model_group: str,

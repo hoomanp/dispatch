@@ -21,14 +21,20 @@ All memory operations are local-first:
 import asyncio
 import hashlib
 import json
+import logging
 import os
+import re
 import sqlite3
 import time
-import logging
+import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-import httpx
+
+try:
+    import httpx
+except ImportError:
+    httpx = None
 
 logger = logging.getLogger("dispatch.memory")
 
@@ -85,6 +91,29 @@ class SemanticFact:
     created_at: float
     updated_at: float
     valid: bool = True
+    superseded_by: Optional[str] = None
+    entity_key: str = ""
+
+
+def extract_entity_key(fact_text: str, category: str) -> str:
+    """Extract a normalized entity key for contradiction matching and supersession."""
+    text = fact_text.lower()
+    patterns = [
+        (r"\b(theme|color scheme|dark mode|light mode)\b", "pref.theme"),
+        (r"\b(language|python|typescript|javascript|rust|golang|c\+\+|java)\b", "pref.language"),
+        (r"\b(database|postgres|mysql|sqlite|qdrant|redis|mongodb)\b", "stack.database"),
+        (r"\b(framework|fastapi|flask|django|react|vue|nextjs|svelte)\b", "stack.framework"),
+        (r"\b(cloud|aws|azure|gcp|cloudflare|digitalocean)\b", "infra.cloud"),
+        (r"\b(deployment|docker|kubernetes|k8s|serverless|helm)\b", "infra.deployment"),
+        (r"\b(budget|cost limit|max cost|quota|spending)\b", "constraint.budget"),
+        (r"\b(auth|jwt|oauth|api key|sso|saml)\b", "security.auth"),
+        (r"\b(timezone|location|country|city|region)\b", "user.location"),
+    ]
+    for pat, key in patterns:
+        if re.search(pat, text):
+            return key
+    words = [w for w in re.sub(r"[^a-zA-Z0-9\s]", " ", text).split() if len(w) > 3][:2]
+    return f"{category}.{'_'.join(words)}" if words else category
 
 
 @dataclass
@@ -146,8 +175,23 @@ class MemoryStore:
                 source_episodes TEXT DEFAULT '[]',
                 created_at REAL NOT NULL,
                 updated_at REAL NOT NULL,
-                valid INTEGER DEFAULT 1
+                valid INTEGER DEFAULT 1,
+                superseded_by TEXT DEFAULT NULL,
+                entity_key TEXT DEFAULT ''
             );
+            CREATE INDEX IF NOT EXISTS idx_facts_valid ON semantic_facts(valid);
+            CREATE INDEX IF NOT EXISTS idx_facts_key ON semantic_facts(entity_key);
+
+            CREATE TABLE IF NOT EXISTS contradictions (
+                id TEXT PRIMARY KEY,
+                old_fact_id TEXT NOT NULL,
+                new_fact_id TEXT NOT NULL,
+                entity_key TEXT NOT NULL,
+                reason TEXT NOT NULL,
+                detected_at REAL NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_contra_old ON contradictions(old_fact_id);
+            CREATE INDEX IF NOT EXISTS idx_contra_new ON contradictions(new_fact_id);
 
             CREATE VIRTUAL TABLE IF NOT EXISTS facts_fts
                 USING fts5(fact_id UNINDEXED, fact, category);
@@ -163,6 +207,15 @@ class MemoryStore:
                 updated_at REAL NOT NULL
             );
         """)
+        # Safe migration if table was created with older schema
+        try:
+            self.db.execute("ALTER TABLE semantic_facts ADD COLUMN superseded_by TEXT DEFAULT NULL")
+        except sqlite3.OperationalError:
+            pass
+        try:
+            self.db.execute("ALTER TABLE semantic_facts ADD COLUMN entity_key TEXT DEFAULT ''")
+        except sqlite3.OperationalError:
+            pass
         self.db.commit()
 
     # Episodes
@@ -190,61 +243,130 @@ class MemoryStore:
             tokens_used=r["tokens_used"], cost_usd=r["cost_usd"],
             metadata=json.loads(r["metadata"] or "{}"))
 
-    # Facts
-    def save_fact(self, fact: SemanticFact):
+    # Facts & Automated Contradiction Supersession
+    def save_fact(self, fact: SemanticFact, check_contradictions: bool = True) -> list[str]:
+        """Save semantic fact. Automatically detects contradicting older facts,
+        marks them as valid=0 and superseded_by=fact.id, and logs contradiction events.
+        Returns list of superseded fact IDs.
+        """
+        if not fact.entity_key:
+            fact.entity_key = extract_entity_key(fact.fact, fact.category)
+
+        superseded_ids = []
+        if check_contradictions and fact.valid and fact.entity_key:
+            # Find active facts with the exact same entity key
+            rows = self.db.execute(
+                "SELECT * FROM semantic_facts WHERE valid=1 AND entity_key=? AND id != ?",
+                (fact.entity_key, fact.id)).fetchall()
+            for r in rows:
+                old_id = r["id"]
+                reason = f"Superseded by newer fact '{fact.fact}' ({fact.entity_key})"
+                self.db.execute(
+                    "UPDATE semantic_facts SET valid=0, superseded_by=?, updated_at=? WHERE id=?",
+                    (fact.id, time.time(), old_id))
+                self.db.execute("DELETE FROM facts_fts WHERE fact_id=?", (old_id,))
+                contra_id = f"contra_{uuid.uuid4().hex[:10]}"
+                self.db.execute(
+                    "INSERT INTO contradictions (id, old_fact_id, new_fact_id, entity_key, reason, detected_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    (contra_id, old_id, fact.id, fact.entity_key, reason, time.time()))
+                superseded_ids.append(old_id)
+
         self.db.execute(
             "INSERT OR REPLACE INTO semantic_facts "
             "(id,fact,category,confidence,source_episodes,created_at,"
-            "updated_at,valid) VALUES (?,?,?,?,?,?,?,?)",
+            "updated_at,valid,superseded_by,entity_key) VALUES (?,?,?,?,?,?,?,?,?,?)",
             (fact.id, fact.fact, fact.category, fact.confidence,
              json.dumps(fact.source_episodes), fact.created_at,
-             fact.updated_at, int(fact.valid)))
+             fact.updated_at, int(fact.valid), fact.superseded_by, fact.entity_key))
         self.db.execute("DELETE FROM facts_fts WHERE fact_id=?", (fact.id,))
-        self.db.execute(
-            "INSERT INTO facts_fts (fact_id,fact,category) VALUES (?,?,?)",
-            (fact.id, fact.fact, fact.category))
+        if fact.valid:
+            self.db.execute(
+                "INSERT INTO facts_fts (fact_id,fact,category) VALUES (?,?,?)",
+                (fact.id, fact.fact, fact.category))
         self.db.commit()
+        return superseded_ids
 
-    def search_facts_fts(self, query: str, limit: int = 10) -> list[SemanticFact]:
+    def search_facts_fts(self, query: str, limit: int = 10,
+                         include_superseded: bool = False) -> list[SemanticFact]:
         query = query.strip()
         if not query:
-            return self.list_facts(limit=limit)
+            return self.list_facts(limit=limit, include_superseded=include_superseded)
         # Sanitize for FTS5: keep alphanumeric words, OR them
         words = [w for w in "".join(
             c if c.isalnum() or c.isspace() else " " for c in query
         ).split() if len(w) > 2]
         if not words:
-            return self.list_facts(limit=limit)
+            return self.list_facts(limit=limit, include_superseded=include_superseded)
         fts_query = " OR ".join(words[:8])
+        valid_clause = "" if include_superseded else "AND sf.valid=1"
         try:
             rows = self.db.execute(
-                "SELECT sf.* FROM semantic_facts sf "
-                "JOIN facts_fts f ON sf.id = f.fact_id "
-                "WHERE facts_fts MATCH ? AND sf.valid=1 "
-                "ORDER BY rank LIMIT ?", (fts_query, limit)).fetchall()
+                f"SELECT sf.* FROM semantic_facts sf "
+                f"JOIN facts_fts f ON sf.id = f.fact_id "
+                f"WHERE facts_fts MATCH ? {valid_clause} "
+                f"ORDER BY rank LIMIT ?", (fts_query, limit)).fetchall()
             return [self._row_to_fact(r) for r in rows]
         except sqlite3.OperationalError:
-            return self.list_facts(limit=limit)
+            return self.list_facts(limit=limit, include_superseded=include_superseded)
 
     def list_facts(self, category: Optional[str] = None,
+                   include_superseded: bool = False,
                    limit: int = 50) -> list[SemanticFact]:
+        valid_filter = "" if include_superseded else "AND valid=1" if category else "WHERE valid=1"
         if category:
             rows = self.db.execute(
-                "SELECT * FROM semantic_facts WHERE category=? AND valid=1 "
-                "ORDER BY confidence DESC LIMIT ?", (category, limit)).fetchall()
+                f"SELECT * FROM semantic_facts WHERE category=? {valid_filter} "
+                f"ORDER BY confidence DESC LIMIT ?", (category, limit)).fetchall()
         else:
             rows = self.db.execute(
-                "SELECT * FROM semantic_facts WHERE valid=1 "
-                "ORDER BY updated_at DESC LIMIT ?", (limit,)).fetchall()
+                f"SELECT * FROM semantic_facts {valid_filter} "
+                f"ORDER BY updated_at DESC LIMIT ?", (limit,)).fetchall()
         return [self._row_to_fact(r) for r in rows]
 
+    def get_fact_provenance(self, fact_id: str) -> dict:
+        """Retrieve fact lineage: origins, supersessions, and contradiction events."""
+        row = self.db.execute("SELECT * FROM semantic_facts WHERE id=?", (fact_id,)).fetchone()
+        if not row:
+            return {}
+        fact = self._row_to_fact(row)
+        superseded_by_fact = None
+        if fact.superseded_by:
+            sup_row = self.db.execute("SELECT * FROM semantic_facts WHERE id=?", (fact.superseded_by,)).fetchone()
+            if sup_row:
+                superseded_by_fact = self._row_to_fact(sup_row)
+
+        contradictions = [
+            dict(r) for r in self.db.execute(
+                "SELECT * FROM contradictions WHERE old_fact_id=? OR new_fact_id=? ORDER BY detected_at DESC",
+                (fact_id, fact_id)).fetchall()
+        ]
+        return {
+            "fact": fact,
+            "is_active": fact.valid,
+            "superseded_by": superseded_by_fact,
+            "contradiction_events": contradictions,
+        }
+
+    def get_contradictions(self, limit: int = 50) -> list[dict]:
+        """Return history of all detected memory contradictions."""
+        rows = self.db.execute(
+            "SELECT * FROM contradictions ORDER BY detected_at DESC LIMIT ?", (limit,)).fetchall()
+        return [dict(r) for r in rows]
+
     def _row_to_fact(self, r) -> SemanticFact:
+        # Handle dict or sqlite3.Row
+        keys = r.keys() if hasattr(r, "keys") else []
+        superseded_by = r["superseded_by"] if "superseded_by" in keys else None
+        entity_key = r["entity_key"] if "entity_key" in keys else ""
         return SemanticFact(
             id=r["id"], fact=r["fact"], category=r["category"],
             confidence=r["confidence"],
             source_episodes=json.loads(r["source_episodes"] or "[]"),
             created_at=r["created_at"], updated_at=r["updated_at"],
-            valid=bool(r["valid"]))
+            valid=bool(r["valid"]),
+            superseded_by=superseded_by,
+            entity_key=entity_key)
 
     # Sessions
     def start_session(self, session_id: str, title: str = ""):
@@ -549,18 +671,27 @@ class MemoryManager:
             conversation_history=conversation,
             total_tokens_estimated=total_chars // 4, sources=sources)
 
+    def get_provenance(self, fact_id: str) -> dict:
+        return self.store.get_fact_provenance(fact_id)
+
+    def get_contradictions(self, limit: int = 50) -> list[dict]:
+        return self.store.get_contradictions(limit=limit)
+
     def stats(self) -> dict:
         s = self.store.memory_stats()
+        contra_count = len(self.store.get_contradictions(limit=1000))
         return {
             "hot": {"active_sessions": len(self._sessions),
                     "turns_in_memory":
                         sum(len(v) for v in self._sessions.values())},
             "warm": {"total_episodes": s["total_episodes"],
                      "total_sessions": s["total_sessions"]},
-            "cold": {"semantic_facts": s["total_facts"]},
+            "cold": {"semantic_facts": s["total_facts"],
+                     "contradictions_detected": contra_count},
             "total_tokens_processed": s["total_tokens"],
             "total_cost_usd": round(s["total_cost_usd"], 4),
         }
 
 
 memory = MemoryManager()
+

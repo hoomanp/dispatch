@@ -69,6 +69,9 @@ model_list:
       model: openrouter/mistralai/mistral-7b-instruct:free
       api_key: os.environ/OPENROUTER_API_KEY
       api_base: https://openrouter.ai/api/v1
+      extra_headers:
+        HTTP-Referer: "https://github.com/hoomanp/dispatch"
+        X-Title: "DISPATCH Gateway"
     model_info: {tier: "1-free", rpm: 20}
 
   - model_name: free-longcontext
@@ -86,11 +89,33 @@ model_list:
       api_key: os.environ/DEEPSEEK_API_KEY
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 60}
 
+  # OpenRouter DeepSeek V3 Route
+  - model_name: budget-general
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      extra_headers:
+        HTTP-Referer: "https://github.com/hoomanp/dispatch"
+        X-Title: "DISPATCH Gateway"
+    model_info: {tier: "2-budget", rpm: 60}
+
   - model_name: budget-reasoning
     litellm_params:
       model: deepseek/deepseek-reasoner
       api_key: os.environ/DEEPSEEK_API_KEY
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 30}
+
+  # OpenRouter DeepSeek R1 Route
+  - model_name: budget-reasoning
+    litellm_params:
+      model: openrouter/deepseek/deepseek-r1
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      extra_headers:
+        HTTP-Referer: "https://github.com/hoomanp/dispatch"
+        X-Title: "DISPATCH Gateway"
+    model_info: {tier: "2-budget", rpm: 30}
 
   # Gemini: implicit caching, no config needed (75% discount on cached reads)
   - model_name: budget-fast
@@ -100,10 +125,9 @@ model_list:
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 1000, tpm: 1000000}
 
   # Claude: explicit cache_control auto-injected on system messages
-  # (90% savings on cache reads; min ~2048 tokens for Haiku 4.5)
   - model_name: budget-claude
     litellm_params:
-      model: anthropic/claude-haiku-4-5-20251001
+      model: anthropic/claude-3-5-haiku-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
       cache_control_injection_points:
         - location: message
@@ -117,18 +141,23 @@ model_list:
       api_key: os.environ/OPENAI_API_KEY
     model_info: {tier: "2-budget", supports_prompt_caching: true, rpm: 500}
 
+  # Qwen 2.5 72B via OpenRouter
   - model_name: budget-multilingual
     litellm_params:
-      model: openai/moonshot-v1-128k
-      api_key: os.environ/KIMI_API_KEY
-      api_base: https://api.moonshot.cn/v1
+      model: openrouter/qwen/qwen-2.5-72b-instruct
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      extra_headers:
+        HTTP-Referer: "https://github.com/hoomanp/dispatch"
+        X-Title: "DISPATCH Gateway"
     model_info: {tier: "2-budget", rpm: 60}
 
   # ── TIER 3: premium APIs ─────────────────────────────────────────
 
+  # Claude 3.7 Sonnet (Anthropic direct)
   - model_name: premium-balanced
     litellm_params:
-      model: anthropic/claude-sonnet-4-6
+      model: anthropic/claude-3-7-sonnet-20250219
       api_key: os.environ/ANTHROPIC_API_KEY
       cache_control_injection_points:
         - location: message
@@ -136,6 +165,17 @@ model_list:
         - location: message
           index: -1
     model_info: {tier: "3-premium", supports_prompt_caching: true, rpm: 50}
+
+  # Claude 3.7 Sonnet (OpenRouter route)
+  - model_name: premium-balanced
+    litellm_params:
+      model: openrouter/anthropic/claude-3.7-sonnet
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      extra_headers:
+        HTTP-Referer: "https://github.com/hoomanp/dispatch"
+        X-Title: "DISPATCH Gateway"
+    model_info: {tier: "3-premium", rpm: 50}
 
   - model_name: premium-openai
     litellm_params:
@@ -151,7 +191,7 @@ model_list:
 
   - model_name: premium-best
     litellm_params:
-      model: anthropic/claude-opus-4-6
+      model: anthropic/claude-3-opus-20240229
       api_key: os.environ/ANTHROPIC_API_KEY
       cache_control_injection_points:
         - location: message
