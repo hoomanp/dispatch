@@ -96,5 +96,45 @@ def dispatch_boundary_policy() -> dict:
     return _get("/boundary/policy")
 
 
+@mcp.tool()
+def dispatch_cost_estimate(prompt: str, model: str = "budget-general", max_tokens: int = 1024) -> dict:
+    """Estimate pre-flight token count and USD cost before running inference.
+    Returns estimated tokens, projected cost, and budget overrun recommendations."""
+    return _post("/dispatch/cost-estimate", {
+        "prompt": prompt,
+        "model": model,
+        "max_tokens": max_tokens,
+    })
+
+
+@mcp.tool()
+def dispatch_trust_snapshot(agent_id: str) -> dict:
+    """Retrieve real-time Bayesian trust score, confidence, and audit trail for an agent."""
+    return _get(f"/trust/{agent_id}")
+
+
+@mcp.tool()
+def dispatch_resolve_escalation(escalation_id: str, verdict: str, reviewer: str = "sec-ops", reason: str = "") -> dict:
+    """Review and resolve an autonomy boundary escalation ('approved' or 'rejected').
+    Approvals raise agent trust; rejections penalize trust."""
+    return _post(f"/boundary/escalations/{escalation_id}/verdict", {
+        "verdict": verdict,
+        "reviewer": reviewer,
+        "reason": reason,
+    })
+
+
+@mcp.tool()
+def dispatch_fact_provenance(fact_id: str) -> dict:
+    """Retrieve full history, supersessions, and contradiction events for a semantic fact."""
+    return _get(f"/memory/facts/{fact_id}/provenance")
+
+
+@mcp.tool()
+def dispatch_contradictions(limit: int = 50) -> dict:
+    """List recent memory contradiction events detected in semantic memory."""
+    return _get(f"/memory/contradictions?limit={limit}")
+
+
 if __name__ == "__main__":
     mcp.run()
