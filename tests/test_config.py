@@ -50,7 +50,18 @@ def test_context_fallbacks_reference_defined_groups():
 
 
 def test_task_routes_reference_defined_groups():
-    from main import TASK_ROUTES
+    try:
+        from main import TASK_ROUTES
+    except (ImportError, ModuleNotFoundError):
+        import ast
+        main_src = (ROOT / "dispatcher/main.py").read_text()
+        tree = ast.parse(main_src)
+        TASK_ROUTES = {}
+        for node in tree.body:
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == "TASK_ROUTES":
+                        TASK_ROUTES = ast.literal_eval(node.value)
     groups = defined_groups()
     for task, chain in TASK_ROUTES.items():
         assert chain, f"task '{task}' has empty route"

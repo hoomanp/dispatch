@@ -150,6 +150,8 @@ class TrustLedger:
             alpha += weight
         else:
             beta += weight
+        import json
+        detail_str = json.dumps(detail) if isinstance(detail, (dict, list)) else (detail or "")
         with self.db:
             self.db.execute(
                 "INSERT INTO trust_agents (agent_id, alpha, beta, events, "
@@ -161,7 +163,32 @@ class TrustLedger:
             self.db.execute(
                 "INSERT INTO trust_events (agent_id, event_type, weight, "
                 "detail, timestamp) VALUES (?,?,?,?,?)",
-                (agent_id, event_type, weight, detail, now))
+                (agent_id, event_type, weight, detail_str, now))
+        self._broadcast(agent_id, event_type, detail_str, alpha, beta)
+        return self.snapshot(agent_id)
+
+    def _broadcast(self, agent_id: str, event_type: str, detail: str, alpha: float, beta: float):
+        """Broadcast trust event to peer instances via Redis PubSub if configured."""
+        if not os.getenv("REDIS_URL") and not os.getenv("REDIS_HOST"):
+            return
+        try:
+            import json
+            import redis
+            host = os.getenv("REDIS_HOST", "redis")
+            port = int(os.getenv("REDIS_PORT", "6379"))
+            url = os.getenv("REDIS_URL")
+            r = redis.from_url(url, socket_timeout=1.0) if url else redis.Redis(host=host, port=port, socket_timeout=1.0)
+            msg = json.dumps({
+                "agent_id": agent_id,
+                "event_type": event_type,
+                "detail": detail,
+                "alpha": alpha,
+                "beta": beta,
+                "timestamp": time.time(),
+            })
+            r.publish("dispatch:events:trust", msg)
+        except Exception:
+            pass
 
     def snapshot(self, agent_id: str) -> TrustSnapshot:
         row = self.db.execute(

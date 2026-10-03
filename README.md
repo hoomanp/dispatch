@@ -204,6 +204,33 @@ $$\text{Trust Score} = \frac{\alpha}{\alpha + \beta}, \quad \text{Confidence} = 
 
 ---
 
+### 8. Distributed Redis State Backplane (Phase 4)
+
+* **Multi-Node Sliding-Window Rate Limiting:** High-throughput sorted set (`ZADD`, `ZREMRANGEBYSCORE`, `ZCARD`) atomic transactions across horizontally scaled DISPATCH clusters.
+* **Zero-Downtime Hybrid Fallback:** If Redis experiences network partition or downtime, `HybridRateLimiter` seamlessly falls back to thread-safe in-memory sliding windows with zero dropped traffic.
+* **Cross-Instance Trust Ledger Synchronization:** Real-time Redis Pub/Sub broadcast (`dispatch:events:trust`) propagates Bayesian trust updates across all cluster nodes.
+
+---
+
+### 9. Adaptive Contextual Bandit Router (Phase 4)
+
+* **Thompson Sampling & $\epsilon$-Greedy Optimization:** Online multi-armed bandit routing algorithm maintaining Beta distributions $\text{Beta}(\alpha, \beta)$ per model candidate arm.
+* **Multi-Objective Composite Reward Function:**
+  $$R = \text{success} \times \left[ 0.40 \cdot (1 - \text{norm\_lat}) + 0.40 \cdot (1 - \text{norm\_cost}) + 0.20 \cdot \text{rating} \right] - (1 - \text{success}) \cdot \text{penalty}$$
+* **Continuous Online Feedback:** Rewards are automatically computed on every completion and asynchronously tunable via `POST /dispatch/feedback`. Arm telemetry and expected value posteriors are queryable via `GET /dispatch/bandit/stats`.
+
+---
+
+### 10. Edge PII/PHI Redaction & Synthetic Token Masking (Phase 4)
+
+* **Zero-Latency In-Memory Regex Engine (`PrivacyMask`):** Deterministic on-premise redaction scanning prompts for sensitive entities before cloud dispatch:
+  * Authentication: API Keys (`sk-proj-*`, `AKIA*`, `ghp_*`), Bearer Tokens, JWTs.
+  * Personal Identifiable Information: Emails, Phone Numbers, Social Security Numbers (SSN).
+  * Financial & Network: Credit Card Numbers (Luhn-compliant patterns), IPv4 Addresses.
+* **Deterministic Reversible Unmasking:** Synthetic tokens (`<MASK:EMAIL_1>`, `<MASK:API_KEY_1>`) are injected into the upstream payload, and original values are substituted back into the generated response before returning to the client. Regulated data remains physically isolated on premise.
+
+---
+
 ## Client Integration & Wire Format Compatibility
 
 DISPATCH features native edge adapters. Existing SDK clients point their `base_url` to DISPATCH without modifying application logic.
@@ -324,7 +351,7 @@ docker compose --profile observability up -d
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/v1/chat/completions` | OpenAI-compatible chat completion (streaming supported). |
+| `POST` | `/v1/chat/completions` | OpenAI-compatible chat completion (streaming supported, automatic PII masking & bandit reward learning). |
 | `POST` | `/v1/embeddings` | Embeddings endpoint (routed to Tier 0 `local-embed`). |
 | `POST` | `/v1/messages` | Anthropic Messages API protocol adapter. |
 | `POST` | `/v1beta/models/{model}:generateContent` | Google Gemini API protocol adapter. |
@@ -332,6 +359,8 @@ docker compose --profile observability up -d
 | `DELETE` | `/v1/sessions/{id}` | Close session; triggers asynchronous local fact extraction. |
 | `POST` | `/dispatch/classify` | Cognitive routing explanation (task classification, confidence & cost estimate). |
 | `POST` | `/dispatch/cost-estimate` | Pre-flight token and USD cost estimation with downgrade recommendation. |
+| `POST` | `/dispatch/feedback` | Online feedback hook for the Adaptive Contextual Bandit Router. |
+| `GET` | `/dispatch/bandit/stats` | Real-time multi-armed bandit arm posteriors and performance metrics. |
 | `GET` | `/dispatch/tiers` | Health, spend status, and gating state across Tiers 0–3. |
 | `GET` | `/trust/{agent_id}` | Bayesian trust snapshot, confidence, and audit trail for an agent. |
 | `GET` | `/trust` | Global trust leaderboard sorted by recent activity. |
@@ -363,6 +392,8 @@ docker compose --profile observability up -d
 | `dispatch_monthly_budget_usd` | Gauge | — | Hard monthly expenditure limit. |
 | `dispatch_boundary_denials_total`| Counter | `action`, `reason` | Security boundary denials and policy escalations triggered. |
 | `dispatch_rate_limit_throttles_total` | Counter | `agent_id` | Sliding-window rate limit throttles partitioned by agent. |
+| `dispatch_pii_redactions_total` | Counter | `entity_type` | Total sensitive entity synthetic token redactions before cloud dispatch. |
+| `dispatch_bandit_reward` | Histogram | `model_group` | Multi-armed bandit reward distribution per model arm. |
 | `dispatch_agent_trust_score` | Gauge | `agent_id` | Real-time Bayesian trust score ($0.0 – 1.0$) per active agent. |
 | `dispatch_memory_facts` | Gauge | — | Total verified semantic facts stored in cold memory. |
 | `dispatch_memory_sessions` | Gauge | — | Total episodic sessions indexed. |
@@ -428,9 +459,14 @@ Results append to `evals/results/history.jsonl` and output formatted executive s
   * Automated memory contradiction detection, supersession, and provenance tracking (`dispatcher/memory_engine.py`).
   * OpenRouter & frontier model provider configurations (Claude 3.7 Sonnet, OpenAI o1/o3-mini, DeepSeek R1/V3, Qwen 2.5 72B, Llama 3.3 70B, Gemini 2.5 Pro).
   * Multi-dimensional evaluation harness with automated Markdown reporting (`evals/harness.py`).
+* [x] **Phase 4: Distributed State, Contextual Bandits & Edge Privacy (v1.4.0)**
+  * Distributed Redis backplane with high-throughput sliding window rate limiting and Pub/Sub trust synchronization.
+  * Adaptive contextual multi-armed bandit optimizer (Thompson Sampling + $\epsilon$-Greedy exploration) with online reward loops.
+  * Edge PII/PHI redaction engine with deterministic reversible unmasking and zero-latency token protection.
 
 ---
 
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+

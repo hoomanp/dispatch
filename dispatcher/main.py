@@ -28,10 +28,12 @@ from pydantic import BaseModel
 from adapters import (anthropic_to_internal, gemini_to_internal,
                       internal_to_anthropic, internal_to_gemini)
 from autonomy_boundary import boundary, group_tier
+from bandit_router import bandit_router
 from cost_engine import cost_engine
 from memory_engine import ContextPipeline, Episode, memory
 from otel import set_routing_attributes
 from otel import setup as otel_setup
+from privacy_mask import privacy_mask
 from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge,
                                Histogram, generate_latest)
 from rate_limiter import rate_limiter
@@ -80,6 +82,10 @@ AGENT_TRUST = _metric(Gauge, "dispatch_agent_trust_score",
                       "Per-agent trust score (0-1)", ["agent_id"])
 RATE_LIMIT_THROTTLES = _metric(Counter, "dispatch_rate_limit_throttles_total",
                               "Rate limit throttles", ["agent_id"])
+PII_REDACTIONS = _metric(Counter, "dispatch_pii_redactions_total",
+                        "PII/PHI synthetic token redactions", ["entity_type"])
+BANDIT_REWARD = _metric(Histogram, "dispatch_bandit_reward",
+                        "Bandit routing reward score", ["model_group"])
 BUDGET_LIMIT.set(MONTHLY_BUDGET)
 
 # ── Task classification ──────────────────────────────────────────────────────
@@ -165,14 +171,8 @@ def select_model(task: str, budget: dict, strategy: str = "cost_first",
     if budget["monthly"] >= MONTHLY_BUDGET:
         return "local-always-on"
     route = list(TASK_ROUTES.get(task, TASK_ROUTES["general"]))
-    if strategy == "local_only":
-        force_tier = "local"
-    elif strategy == "quality_first":
-        route = list(reversed(route))
-    elif strategy == "speed_first":
-        prio = ["local-fast", "free-fast", "local-always-on", "budget-fast"]
-        route = [g for g in prio if g in route] + \
-                [g for g in route if g not in prio]
+
+    eligible = []
     for mg in route:
         if force_tier and not mg.startswith(("local", force_tier)):
             continue
@@ -180,8 +180,25 @@ def select_model(task: str, budget: dict, strategy: str = "cost_first",
             continue
         if mg.startswith("premium") and not budget["tier3_ok"]:
             continue
-        return mg
-    return "local-always-on"
+        eligible.append(mg)
+
+    if not eligible:
+        return "local-always-on"
+
+    if strategy == "bandit":
+        chosen, _ = bandit_router.select_arm(eligible, strategy="bandit")
+        return chosen
+    elif strategy == "local_only":
+        local_candidates = [g for g in eligible if g.startswith("local")]
+        return local_candidates[0] if local_candidates else "local-always-on"
+    elif strategy == "quality_first":
+        return list(reversed(eligible))[0]
+    elif strategy == "speed_first":
+        prio = ["local-fast", "free-fast", "local-always-on", "budget-fast"]
+        speed_candidates = [g for g in prio if g in eligible]
+        return speed_candidates[0] if speed_candidates else eligible[0]
+
+    return eligible[0]
 
 
 # ── App ──────────────────────────────────────────────────────────────────────
@@ -239,6 +256,7 @@ class ChatRequest(BaseModel):
     agent_id: Optional[str] = None  # for trust scoring; falls back to X-Agent-Id header
     organization_id: Optional[str] = None  # Phase 2: multi-tenant organization tag
     project_id: Optional[str] = None  # Phase 2: multi-tenant project tag
+    mask_pii: Optional[bool] = None  # Phase 4: Edge PII/PHI synthetic redaction
 
 
 class SessionRequest(BaseModel):
@@ -291,6 +309,17 @@ async def chat(req: ChatRequest, request: Request):
     budget = await get_budget()
     messages = [dict(m) for m in req.messages]
 
+    # Phase 4: Edge PII/PHI Redaction & Synthetic Token Masking
+    should_mask = (req.mask_pii if req.mask_pii is not None
+                   else (request.headers.get("x-mask-pii", "").lower() in ("true", "1")
+                         or req.classification in ("confidential", "internal")))
+    token_map = {}
+    detected_pii = []
+    if should_mask:
+        messages, token_map, detected_pii = privacy_mask.mask_messages(messages)
+        for entity in detected_pii:
+            PII_REDACTIONS.labels(entity_type=entity).inc()
+
     # Memory-aware context assembly
     memory_active = bool(req.session_id and req.use_memory)
     if memory_active:
@@ -324,7 +353,7 @@ async def chat(req: ChatRequest, request: Request):
 
     model_group = (req.model if req.model != "auto"
                    else select_model(task, budget,
-                                     strategy=req.strategy or "cost_first",
+                                     strategy=req.strategy or "bandit",
                                      force_tier=req.force_tier))
 
     # ── Autonomy boundary (control plane) ────────────────────────────────────
@@ -368,6 +397,8 @@ async def chat(req: ChatRequest, request: Request):
                                 reason=decision.reason[:60]).inc()
         REQS.labels(task=task, model_group=model_group,
                     tier=str(tier), outcome="denied").inc()
+        # Record failure penalty for bandit
+        bandit_router.record_feedback(model_group, success=False)
         raise HTTPException(403, {
             "error": "autonomy_boundary",
             "reason": decision.reason,
@@ -397,12 +428,34 @@ async def chat(req: ChatRequest, request: Request):
         return StreamingResponse(streamer(), media_type="text/event-stream")
 
     client = get_client()
-    r = await client.post(f"{LITELLM_URL}/v1/chat/completions",
-                          json=payload, headers=AUTH_HEADERS, timeout=300.0)
+    try:
+        r = await client.post(f"{LITELLM_URL}/v1/chat/completions",
+                              json=payload, headers=AUTH_HEADERS, timeout=300.0)
+    except Exception as e:
+        bandit_router.record_feedback(model_group, success=False)
+        raise HTTPException(502, f"Upstream proxy execution failed: {e}")
+
     if r.status_code != 200:
+        bandit_router.record_feedback(model_group, success=False)
         raise HTTPException(r.status_code, r.text)
+
     data = r.json()
     latency_ms = round((time.time() - start) * 1000, 1)
+
+    # Phase 4: Reversible unmasking of generated response
+    answer = data["choices"][0]["message"].get("content", "") or ""
+    if token_map and answer:
+        answer = privacy_mask.unmask_text(answer, token_map)
+        data["choices"][0]["message"]["content"] = answer
+
+    # Phase 4: Adaptive Bandit Router reward feedback
+    reward = bandit_router.record_feedback(
+        model_group=model_group,
+        success=True,
+        latency_ms=latency_ms,
+        cost_usd=cost_est.estimated_cost_usd,
+    )
+    BANDIT_REWARD.labels(model_group=model_group).observe(reward)
 
     # Metrics
     usage_m = data.get("usage", {}) or {}
@@ -417,7 +470,6 @@ async def chat(req: ChatRequest, request: Request):
 
     if memory_active:
         usage = data.get("usage", {}) or {}
-        answer = data["choices"][0]["message"].get("content", "") or ""
         memory.record(Episode(
             id=hashlib.sha256(
                 f"{req.session_id}a{time.time()}".encode()).hexdigest()[:12],
@@ -431,6 +483,12 @@ async def chat(req: ChatRequest, request: Request):
         "latency_ms": latency_ms, "session_id": req.session_id,
         "memory_active": memory_active,
         "audit": decision.audit,
+        "bandit_reward": reward,
+        "privacy_masking": {
+            "enabled": bool(should_mask),
+            "masked_entities": detected_pii,
+            "tokens_redacted": len(token_map),
+        },
         "cost_estimate": {
             "input_tokens": cost_est.input_tokens,
             "output_tokens": cost_est.output_tokens,
@@ -726,6 +784,40 @@ async def boundary_escalations(status: Optional[str] = None):
     return {"escalations": boundary.escalations(status=status)}
 
 
+# ── Phase 4: Bandit Feedback & Stats ─────────────────────────────────────────
+
+class BanditFeedbackRequest(BaseModel):
+    model_group: str
+    success: bool = True
+    latency_ms: float = 0.0
+    cost_usd: float = 0.0
+    user_satisfaction: Optional[float] = None  # -1.0 to 1.0 or 0.0 to 1.0
+
+
+@app.post("/dispatch/feedback")
+async def bandit_feedback(req: BanditFeedbackRequest):
+    """Explicit feedback hook for the Adaptive Contextual Bandit Router."""
+    reward = bandit_router.record_feedback(
+        model_group=req.model_group,
+        success=req.success,
+        latency_ms=req.latency_ms,
+        cost_usd=req.cost_usd,
+        user_satisfaction=req.user_satisfaction,
+    )
+    BANDIT_REWARD.labels(model_group=req.model_group).observe(reward)
+    return {
+        "model_group": req.model_group,
+        "reward_assigned": reward,
+        "arm_stats": bandit_router.stats().get(req.model_group, {}),
+    }
+
+
+@app.get("/dispatch/bandit/stats")
+async def bandit_stats():
+    """Returns real-time multi-armed bandit arm performance and posterior distributions."""
+    return {"arms": bandit_router.stats()}
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
@@ -733,5 +825,6 @@ async def health():
 
 @app.get("/")
 async def root():
-    return {"service": "DISPATCH", "version": "1.1.0",
+    return {"service": "DISPATCH", "version": "1.2.0",
             "docs": "/docs", "memory": memory.stats()}
+

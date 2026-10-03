@@ -40,3 +40,33 @@ rate_limits:
 notifications:
   webhook_url: ""           # e.g. https://ops.example.com/webhooks/escalations
   slack_webhook_url: ""     # e.g. https://hooks.slack.com/services/...
+
+# Edge Privacy Masking (Phase 4): zero-overhead regex redaction before cloud egress
+privacy_masking:
+  enabled: true
+  redact_on_cloud_egress: true   # Auto-mask PII/PHI on Tier 1, 2, 3 outbound requests
+  preserve_entity_keys: true     # Maintain deterministic reversible unmasking table
+  redact_patterns:
+    - api_key
+    - email
+    - phone
+    - ssn
+    - credit_card
+    - ip_address
+    - jwt
+
+# Contextual Bandit Routing (Phase 4): Multi-armed bandit tier selection
+bandit_routing:
+  enabled: true
+  strategy: thompson_sampling   # thompson_sampling | epsilon_greedy
+  epsilon: 0.10                 # 10% exploration rate for epsilon-greedy
+  prior_alpha: 2.0
+  prior_beta: 2.0
+
+# Distributed State Backplane (Phase 4): Redis distributed locks & PubSub sync
+redis_backplane:
+  enabled: false                # Automatically falls back to in-memory if Redis unavailable
+  redis_url: "redis://localhost:6379/0"
+  sync_trust_ledger: true
+  distributed_rate_limiting: true
+
