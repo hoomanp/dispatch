@@ -13,6 +13,7 @@ import asyncio
 import hashlib
 import logging
 import os
+import secrets
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -198,7 +199,7 @@ async def auth_middleware(request: Request, call_next):
         # Anthropic SDK sends x-api-key; OpenAI/Gemini SDKs send Bearer
         key = (header.removeprefix("Bearer ").strip()
                or request.headers.get("x-api-key", "").strip())
-        if key != DISPATCH_API_KEY:
+        if not secrets.compare_digest(key, DISPATCH_API_KEY):
             from fastapi.responses import JSONResponse
             return JSONResponse(
                 {"error": "unauthorized",
