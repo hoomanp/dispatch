@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
@@ -48,12 +46,15 @@ services:
       - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
       - MEMORY_DB=/data/memory.db
       - DISPATCH_API_KEY=${DISPATCH_API_KEY:-}
+      - REDIS_URL=redis://redis:6379
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
       - OTEL_SERVICE_NAME=dispatch
     volumes:
       - dispatch_memory:/data
+      - ./config/autonomy_boundary.yaml:/app/config/autonomy_boundary.yaml:ro
     depends_on:
       litellm: {condition: service_healthy}
+      redis: {condition: service_healthy}
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

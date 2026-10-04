@@ -13,7 +13,6 @@ import asyncio
 import hashlib
 import logging
 import os
-import re
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -90,40 +89,9 @@ BUDGET_LIMIT.set(MONTHLY_BUDGET)
 
 # ── Task classification ──────────────────────────────────────────────────────
 
-PATTERNS = {
-    "coding": re.compile(
-        r"\b(code|function|class|def |implement|refactor|debug|bug|script|"
-        r"python|typescript|javascript|rust|golang|sql|api|endpoint|"
-        r"algorithm|regex|dockerfile)\b", re.I),
-    "reasoning": re.compile(
-        r"\b(analyze|reason|explain why|compare|evaluate|pros.?cons|"
-        r"trade.?off|architecture|design|strategy|step.?by.?step|decision)\b",
-        re.I),
-    "math": re.compile(
-        r"\b(calculate|compute|solve|equation|derivative|integral|proof|"
-        r"theorem|probability|statistics|matrix)\b", re.I),
-    "long_context": re.compile(
-        r"\b(entire|whole|full|complete|all of|summarize this|"
-        r"analyze this|the following file)\b", re.I),
-    "multilingual": re.compile(
-        r"\b(translate|in (spanish|french|german|chinese|japanese|arabic|"
-        r"persian|korean|portuguese|italian|russian))\b", re.I),
-    "quality": re.compile(
-        r"\b(best possible|highest quality|most accurate|critical|"
-        r"production.?ready|thorough)\b", re.I),
-}
-
-TASK_ROUTES = {
-    "coding":       ["local-fast", "free-fast", "budget-general", "premium-balanced"],
-    "reasoning":    ["local-fast", "budget-reasoning", "free-fast", "premium-balanced"],
-    "fast_chat":    ["local-always-on", "local-mobile", "free-fast", "budget-fast"],
-    "long_context": ["free-longcontext", "budget-fast", "budget-multilingual", "premium-gemini"],
-    "multilingual": ["budget-multilingual", "free-longcontext", "budget-fast", "premium-gemini"],
-    "math":         ["budget-reasoning", "free-fast", "premium-balanced", "premium-openai"],
-    "quality":      ["premium-balanced", "premium-openai", "premium-gemini", "premium-best"],
-    "embedding":    ["local-embed"],
-    "general":      ["local-always-on", "free-general", "free-fast", "budget-general"],
-}
+# Task classification — PATTERNS and TASK_ROUTES are imported from
+# semantic_router (single source of truth). The local copies that used to
+# live here had drifted out of sync with it.
 
 
 def classify_simple(prompt: str, context_tokens: int = 0) -> str:

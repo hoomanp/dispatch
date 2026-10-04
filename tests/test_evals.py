@@ -10,15 +10,32 @@ harness = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(harness)
 
 
+# Check types the harness actually implements in run()
+CHECK_TYPES = {"route", "sovereignty", "cost_limit", "response_contains"}
+
+
 def test_golden_parses_and_valid():
     cases = harness.load_golden()
     assert len(cases) >= 6
     for c in cases:
-        assert c["check"] in ("route", "response_contains"), c["id"]
+        assert c["check"] in CHECK_TYPES, c["id"]
         if c["check"] == "route":
             assert "expect_task" in c or "expect_group_prefix" in c, c["id"]
+        elif c["check"] == "sovereignty":
+            assert "classification" in c and "expect_allowed" in c, c["id"]
+        elif c["check"] == "cost_limit":
+            assert "expect_max_cost" in c, c["id"]
         else:
             assert c.get("contains"), c["id"]
+
+
+def test_harness_implements_every_check_type():
+    """golden.jsonl must never use a check run() doesn't handle."""
+    import inspect
+    src = inspect.getsource(harness.run)
+    for check in {c["check"] for c in harness.load_golden()}:
+        assert f'check_type == "{check}"' in src, f"run() has no branch for {check!r}"
+
 
 def test_golden_ids_unique():
     ids = [c["id"] for c in harness.load_golden()]
