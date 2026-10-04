@@ -10,4 +10,9 @@ node_modules/
 .DS_Store
 data/
 *.zip
+.freebuff/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
 
