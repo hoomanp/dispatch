@@ -55,15 +55,13 @@ DOWNGRADE_MAP: Dict[str, List[str]] = {
 
 
 def estimate_tokens(text: str) -> int:
-    """Fast, accurate token estimation across diverse prompt structures.
+    """Fast, zero-allocation token estimation across diverse prompt structures.
     Uses ~3.75 chars per token for English code/text with word boundary weighting.
     """
     if not text:
         return 0
     char_len = len(text)
-    # Heuristic: base character ratio
     tokens = char_len / 3.75
-    # Whitespace and punctuation adjustment
     word_count = len(text.split())
     if word_count > 0:
         tokens = max(tokens, word_count * 1.2)
@@ -71,19 +69,17 @@ def estimate_tokens(text: str) -> int:
 
 
 def estimate_request_tokens(messages: List[Dict[str, Any]], max_tokens: int = 1024) -> Tuple[int, int]:
-    """Estimate input tokens from messages and expected output tokens."""
-    input_chars = 0
+    """Estimate input tokens from messages directly without intermediate string allocation."""
+    input_tokens = 0
     for m in messages:
         content = m.get("content", "")
         if isinstance(content, str):
-            input_chars += len(content)
+            input_tokens += estimate_tokens(content)
         elif isinstance(content, list):
             for block in content:
                 if isinstance(block, dict) and block.get("type") == "text":
-                    input_chars += len(block.get("text", ""))
-
-    input_tokens = estimate_tokens(" " * input_chars)
-    # Output is bounded by max_tokens or default heuristic
+                    input_tokens += estimate_tokens(block.get("text", ""))
+    input_tokens = max(1, input_tokens) if messages else 0
     output_tokens = max_tokens if max_tokens and max_tokens > 0 else 512
     return input_tokens, output_tokens
 
@@ -112,7 +108,7 @@ class CostEngine:
     def estimate(self, messages: List[Dict[str, Any]], model_group: str,
                  max_tokens: int = 1024, cached_input: bool = False,
                  budget_ceiling_usd: Optional[float] = None) -> CostEstimate:
-        """Calculate pre-flight tokens and cost estimate for a proposed request."""
+        """Calculate pre-flight tokens and conservative cost estimate for a proposed request."""
         inp_tok, out_tok = estimate_request_tokens(messages, max_tokens)
         total_tok = inp_tok + out_tok
 
@@ -130,7 +126,6 @@ class CostEngine:
 
         if budget_ceiling_usd is not None and total_cost > budget_ceiling_usd:
             budget_exceeded = True
-            # Recommend cheaper alternative
             for alt_group in DOWNGRADE_MAP.get(model_group, ["local-fast", "free-fast"]):
                 alt_est = self.estimate(messages, alt_group, max_tokens, cached_input, None)
                 if alt_est.estimated_cost_usd <= budget_ceiling_usd:

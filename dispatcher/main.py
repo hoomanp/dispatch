@@ -37,7 +37,7 @@ from privacy_mask import privacy_mask
 from prometheus_client import (CONTENT_TYPE_LATEST, Counter, Gauge,
                                Histogram, generate_latest)
 from rate_limiter import rate_limiter
-from semantic_router import TASK_ROUTES, semantic_router
+from semantic_router import TASK_ROUTES, extract_content_text, semantic_router
 from trust_ledger import trust
 
 logging.basicConfig(
@@ -115,7 +115,16 @@ def get_client() -> httpx.AsyncClient:
     return _client
 
 
-async def get_budget() -> dict:
+_budget_cache: Optional[dict] = None
+_budget_cached_at: float = 0.0
+_BUDGET_TTL_SECONDS: float = 10.0
+
+
+async def get_budget(force_refresh: bool = False) -> dict:
+    global _budget_cache, _budget_cached_at
+    now = time.time()
+    if not force_refresh and _budget_cache is not None and (now - _budget_cached_at) < _BUDGET_TTL_SECONDS:
+        return dict(_budget_cache)
     try:
         client = get_client()
         r = await client.get(f"{LITELLM_URL}/global/spend",
@@ -123,16 +132,22 @@ async def get_budget() -> dict:
         if r.status_code == 200:
             d = r.json()
             monthly = float(d.get("spend", 0.0) or 0.0)
-            return {
+            _budget_cache = {
                 "monthly": monthly, "daily": 0.0,
                 "tier2_ok": monthly < MONTHLY_BUDGET * 0.8,
                 "tier3_ok": monthly < MONTHLY_BUDGET * 0.9,
             }
+            _budget_cached_at = now
+            return dict(_budget_cache)
     except Exception:
         pass
     # LiteLLM unreachable or endpoint variant differs: be permissive on
     # cheap tiers, conservative on premium.
-    return {"monthly": 0.0, "daily": 0.0, "tier2_ok": True, "tier3_ok": True}
+    fallback = {"monthly": 0.0, "daily": 0.0, "tier2_ok": True, "tier3_ok": True}
+    if _budget_cache is None:
+        _budget_cache = fallback
+        _budget_cached_at = now
+    return dict(_budget_cache)
 
 
 def select_model(task: str, budget: dict, strategy: str = "cost_first",
@@ -155,7 +170,7 @@ def select_model(task: str, budget: dict, strategy: str = "cost_first",
         return "local-always-on"
 
     if strategy == "bandit":
-        chosen, _ = bandit_router.select_arm(eligible, strategy="bandit")
+        chosen, _ = bandit_router.select_arm(eligible, strategy="bandit", task=task)
         return chosen
     elif strategy == "local_only":
         local_candidates = [g for g in eligible if g.startswith("local")]
@@ -271,63 +286,21 @@ async def chat(req: ChatRequest, request: Request):
             },
         )
 
-    prompt = str(req.messages[-1].get("content", ""))
+    prompt = extract_content_text(req.messages[-1].get("content", ""))
     context_tokens = int(sum(
-        len(str(m.get("content", "")).split()) * 1.3 for m in req.messages))
+        len(extract_content_text(m.get("content", "")).split()) * 1.3
+        for m in req.messages
+    ))
     task = req.task or classify_simple(prompt, context_tokens)
     budget = await get_budget()
     messages = [dict(m) for m in req.messages]
 
-    # Phase 4: Edge PII/PHI Redaction & Synthetic Token Masking
-    should_mask = (req.mask_pii if req.mask_pii is not None
-                   else (request.headers.get("x-mask-pii", "").lower() in ("true", "1")
-                         or req.classification in ("confidential", "internal")))
-    token_map = {}
-    detected_pii = []
-    if should_mask:
-        messages, token_map, detected_pii = privacy_mask.mask_messages(messages)
-        for entity in detected_pii:
-            PII_REDACTIONS.labels(entity_type=entity).inc()
-
-    # Memory-aware context assembly
-    memory_active = bool(req.session_id and req.use_memory)
-    if memory_active:
-        # Record the incoming user turn
-        memory.record(Episode(
-            id=hashlib.sha256(
-                f"{req.session_id}u{time.time()}".encode()).hexdigest()[:12],
-            session_id=req.session_id, timestamp=time.time(),
-            role="user", content=prompt, task_type=task))
-
-        wctx = await memory.build_context(
-            session_id=req.session_id, query=prompt,
-            documents=req.documents or [],
-            system_prompt=messages[0]["content"]
-            if messages[0].get("role") == "system" else "")
-
-        if wctx.memory_injection:
-            if messages[0].get("role") == "system":
-                messages[0]["content"] = (
-                    f"{messages[0]['content']}\n\n{wctx.memory_injection}")
-            else:
-                messages.insert(0, {"role": "system",
-                                    "content": wctx.memory_injection})
-    elif req.documents:
-        doc_text, _ = await ContextPipeline().prepare(req.documents, prompt)
-        block = f"Documents:\n{doc_text}"
-        if messages[0].get("role") == "system":
-            messages[0]["content"] = f"{messages[0]['content']}\n\n{block}"
-        else:
-            messages.insert(0, {"role": "system", "content": block})
-
+    # Select candidate model group & clamp to classification ceiling first
     model_group = (req.model if req.model != "auto"
                    else select_model(task, budget,
                                      strategy=req.strategy or "bandit",
                                      force_tier=req.force_tier))
 
-    # ── Autonomy boundary (control plane) ────────────────────────────────────
-    # Sovereignty: classification caps the tier; degrade rather than fail
-    # when routing was automatic, hard-deny when the client forced a group.
     task_route = TASK_ROUTES.get(task, TASK_ROUTES["general"])
     if req.model == "auto":
         model_group = boundary.clamp_group_to_ceiling(
@@ -335,12 +308,12 @@ async def chat(req: ChatRequest, request: Request):
     tier = group_tier(model_group)
     docs_chars = sum(len(d) for d in (req.documents or []))
 
-    # Pre-flight token and cost estimation
+    # Pre-flight token and conservative (uncached) cost estimation
     cost_est = cost_engine.estimate(
         messages=messages,
         model_group=model_group,
         max_tokens=req.max_tokens or 1024,
-        cached_input=not req.no_cache,
+        cached_input=False,
         budget_ceiling_usd=float(boundary.policy.get("max_cost_per_request_usd", 0.50)),
     )
     if req.model == "auto" and cost_est.budget_exceeded and cost_est.recommended_group:
@@ -350,6 +323,7 @@ async def chat(req: ChatRequest, request: Request):
         model_group = cost_est.recommended_group
         tier = group_tier(model_group)
 
+    # ── Autonomy boundary (control plane) ────────────────────────────────────
     decision = boundary.evaluate(
         action=f"inference.tier{tier}",
         classification=req.classification,
@@ -366,8 +340,7 @@ async def chat(req: ChatRequest, request: Request):
                                 reason=decision.reason[:60]).inc()
         REQS.labels(task=task, model_group=model_group,
                     tier=str(tier), outcome="denied").inc()
-        # Record failure penalty for bandit
-        bandit_router.record_feedback(model_group, success=False)
+        # Control-plane policy denials must NOT penalize model reliability posteriors
         raise HTTPException(403, {
             "error": "autonomy_boundary",
             "reason": decision.reason,
@@ -375,6 +348,62 @@ async def chat(req: ChatRequest, request: Request):
             "escalation": decision.escalation})
     set_routing_attributes(task, model_group, tier,
                            decision.audit.get("audit_id", ""))
+
+    # Phase 4: Edge PII/PHI Redaction & Synthetic Token Masking
+    # Evaluated AFTER tier resolution so local Tier 0 silicon stays unredacted
+    # unless explicitly requested, while cloud egress (Tier 1..3) is protected.
+    privacy_cfg = boundary.policy.get("privacy_masking", {})
+    header_mask = request.headers.get("x-mask-pii", "").lower()
+    if req.mask_pii is not None:
+        should_mask = req.mask_pii
+    elif header_mask in ("true", "1", "false", "0"):
+        should_mask = header_mask in ("true", "1")
+    else:
+        redact_cloud = privacy_cfg.get("enabled", True) and privacy_cfg.get("redact_on_cloud_egress", True)
+        should_mask = (
+            (redact_cloud and tier > 0)
+            or req.classification in ("confidential", "internal")
+        )
+
+    token_map = {}
+    detected_pii = []
+    if should_mask:
+        messages, token_map, detected_pii = privacy_mask.mask_messages(messages)
+        for entity in detected_pii:
+            PII_REDACTIONS.labels(entity_type=entity).inc()
+
+    # Extract redacted prompt so episodic memory & fact extraction never store raw PII
+    safe_prompt = extract_content_text(messages[-1].get("content", ""))
+
+    # Memory-aware context assembly
+    memory_active = bool(req.session_id and req.use_memory)
+    if memory_active:
+        memory.record(Episode(
+            id=hashlib.sha256(
+                f"{req.session_id}u{time.time()}".encode()).hexdigest()[:12],
+            session_id=req.session_id, timestamp=time.time(),
+            role="user", content=safe_prompt, task_type=task))
+
+        wctx = await memory.build_context(
+            session_id=req.session_id, query=safe_prompt,
+            documents=req.documents or [],
+            system_prompt=extract_content_text(messages[0].get("content", ""))
+            if messages[0].get("role") == "system" else "")
+
+        if wctx.memory_injection:
+            if messages[0].get("role") == "system":
+                messages[0]["content"] = (
+                    f"{extract_content_text(messages[0]['content'])}\n\n{wctx.memory_injection}")
+            else:
+                messages.insert(0, {"role": "system",
+                                    "content": wctx.memory_injection})
+    elif req.documents:
+        doc_text, _ = await ContextPipeline().prepare(req.documents, safe_prompt)
+        block = f"Documents:\n{doc_text}"
+        if messages[0].get("role") == "system":
+            messages[0]["content"] = f"{extract_content_text(messages[0]['content'])}\n\n{block}"
+        else:
+            messages.insert(0, {"role": "system", "content": block})
 
     payload = {
         "model": model_group, "messages": messages,
@@ -389,11 +418,34 @@ async def chat(req: ChatRequest, request: Request):
     if req.stream:
         async def streamer():
             client = get_client()
-            async with client.stream(
-                    "POST", f"{LITELLM_URL}/v1/chat/completions",
-                    json=payload, headers=AUTH_HEADERS, timeout=300.0) as r:
-                async for chunk in r.aiter_bytes():
-                    yield chunk
+            stream_ok = False
+            try:
+                async with client.stream(
+                        "POST", f"{LITELLM_URL}/v1/chat/completions",
+                        json=payload, headers=AUTH_HEADERS, timeout=300.0) as r:
+                    stream_ok = (r.status_code == 200)
+                    async for chunk in r.aiter_bytes():
+                        if token_map and chunk:
+                            try:
+                                text_chunk = chunk.decode("utf-8")
+                                yield privacy_mask.unmask_text(text_chunk, token_map).encode("utf-8")
+                                continue
+                            except UnicodeDecodeError:
+                                pass
+                        yield chunk
+            finally:
+                elapsed_ms = round((time.time() - start) * 1000, 1)
+                rw = bandit_router.record_feedback(
+                    model_group=model_group,
+                    success=stream_ok,
+                    latency_ms=elapsed_ms,
+                    cost_usd=cost_est.estimated_cost_usd if stream_ok else 0.0,
+                    task=task,
+                )
+                BANDIT_REWARD.labels(model_group=model_group).observe(rw)
+                REQS.labels(task=task, model_group=model_group,
+                            tier=str(tier), outcome="ok" if stream_ok else "error").inc()
+                LATENCY.labels(model_group=model_group).observe(elapsed_ms / 1000)
         return StreamingResponse(streamer(), media_type="text/event-stream")
 
     client = get_client()
@@ -401,28 +453,40 @@ async def chat(req: ChatRequest, request: Request):
         r = await client.post(f"{LITELLM_URL}/v1/chat/completions",
                               json=payload, headers=AUTH_HEADERS, timeout=300.0)
     except Exception as e:
-        bandit_router.record_feedback(model_group, success=False)
+        bandit_router.record_feedback(model_group, success=False, task=task)
         raise HTTPException(502, f"Upstream proxy execution failed: {e}")
 
     if r.status_code != 200:
-        bandit_router.record_feedback(model_group, success=False)
+        bandit_router.record_feedback(model_group, success=False, task=task)
         raise HTTPException(r.status_code, r.text)
 
     data = r.json()
     latency_ms = round((time.time() - start) * 1000, 1)
 
-    # Phase 4: Reversible unmasking of generated response
-    answer = data["choices"][0]["message"].get("content", "") or ""
+    raw_answer = data["choices"][0]["message"].get("content", "") or ""
+    if memory_active:
+        usage = data.get("usage", {}) or {}
+        memory.record(Episode(
+            id=hashlib.sha256(
+                f"{req.session_id}a{time.time()}".encode()).hexdigest()[:12],
+            session_id=req.session_id, timestamp=time.time(),
+            role="assistant", content=raw_answer, task_type=task,
+            provider_id=model_group,
+            tokens_used=int(usage.get("total_tokens", 0) or 0)))
+
+    # Phase 4: Reversible unmasking of generated response for client return
+    answer = raw_answer
     if token_map and answer:
         answer = privacy_mask.unmask_text(answer, token_map)
         data["choices"][0]["message"]["content"] = answer
 
-    # Phase 4: Adaptive Bandit Router reward feedback
+    # Phase 4: Adaptive Bandit Router contextual reward feedback
     reward = bandit_router.record_feedback(
         model_group=model_group,
         success=True,
         latency_ms=latency_ms,
         cost_usd=cost_est.estimated_cost_usd,
+        task=task,
     )
     BANDIT_REWARD.labels(model_group=model_group).observe(reward)
 
@@ -436,16 +500,6 @@ async def chat(req: ChatRequest, request: Request):
     TOKENS.labels(model_group=model_group, direction="output").inc(
         int(usage_m.get("completion_tokens", 0) or 0))
     BUDGET_SPEND.set(budget["monthly"])
-
-    if memory_active:
-        usage = data.get("usage", {}) or {}
-        memory.record(Episode(
-            id=hashlib.sha256(
-                f"{req.session_id}a{time.time()}".encode()).hexdigest()[:12],
-            session_id=req.session_id, timestamp=time.time(),
-            role="assistant", content=answer, task_type=task,
-            provider_id=model_group,
-            tokens_used=int(usage.get("total_tokens", 0) or 0)))
 
     data["_dispatch"] = {
         "task": task, "model_group": model_group,
@@ -761,6 +815,7 @@ class BanditFeedbackRequest(BaseModel):
     latency_ms: float = 0.0
     cost_usd: float = 0.0
     user_satisfaction: Optional[float] = None  # -1.0 to 1.0 or 0.0 to 1.0
+    task: Optional[str] = None
 
 
 @app.post("/dispatch/feedback")
@@ -772,19 +827,21 @@ async def bandit_feedback(req: BanditFeedbackRequest):
         latency_ms=req.latency_ms,
         cost_usd=req.cost_usd,
         user_satisfaction=req.user_satisfaction,
+        task=req.task,
     )
     BANDIT_REWARD.labels(model_group=req.model_group).observe(reward)
     return {
         "model_group": req.model_group,
+        "task": req.task,
         "reward_assigned": reward,
-        "arm_stats": bandit_router.stats().get(req.model_group, {}),
+        "arm_stats": bandit_router.stats(task=req.task).get(req.model_group, {}),
     }
 
 
 @app.get("/dispatch/bandit/stats")
-async def bandit_stats():
+async def bandit_stats(task: Optional[str] = None):
     """Returns real-time multi-armed bandit arm performance and posterior distributions."""
-    return {"arms": bandit_router.stats()}
+    return {"arms": bandit_router.stats(task=task)}
 
 
 @app.get("/health")

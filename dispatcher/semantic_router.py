@@ -2,8 +2,8 @@
 DISPATCH Cognitive & Semantic Task Router (Phase 3).
 
 Provides zero-shot semantic intent classification and task routing.
-Combines semantic exemplar similarity with regex feature priors to
-reliably route prompts to optimal model tiers (local, free, budget, premium)
+Combines TF-IDF weighted semantic exemplar similarity with regex feature priors
+to reliably route prompts to optimal model tiers (local, free, budget, premium)
 with explainable confidence scores.
 """
 
@@ -11,7 +11,7 @@ import logging
 import math
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("dispatch.semantic_router")
 
@@ -108,24 +108,57 @@ TASK_EXEMPLARS: Dict[str, List[str]] = {
     ],
 }
 
+_TECH_SHORT_TOKENS = {
+    "go", "ai", "ui", "db", "os", "ip", "ci", "cd", "ml", "js", "ts", "py", "v1", "o1", "o3", "pi", "vm", "s3"
+}
+
+_STOPWORDS = {
+    "the", "and", "for", "are", "but", "not", "you", "any", "can", "had",
+    "her", "was", "one", "our", "out", "has", "him", "his", "new", "now",
+    "old", "see", "two", "way", "who", "did", "its", "let", "put", "say",
+    "she", "too", "use", "this", "that", "with", "from", "have",
+}
+
+
+def extract_content_text(content: Any) -> str:
+    """Safely extract text string from string or multimodal list content blocks."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, dict) and block.get("type") == "text":
+                parts.append(str(block.get("text", "")))
+            elif isinstance(block, str):
+                parts.append(block)
+        return "\n".join(parts)
+    return str(content or "")
+
 
 def _tokenize(text: str) -> List[str]:
-    """Tokenize lowercase alphanumeric terms with length >= 3."""
+    """Tokenize lowercase alphanumeric terms, retaining high-signal 2-char technical tokens."""
     clean = re.sub(r"[^a-zA-Z0-9\s]", " ", text.lower())
-    return [w for w in clean.split() if len(w) >= 3]
+    return [
+        w for w in clean.split()
+        if (len(w) >= 3 or w in _TECH_SHORT_TOKENS) and w not in _STOPWORDS
+    ]
 
 
-def _build_term_vector(tokens: List[str]) -> Dict[str, float]:
-    """Build normalized term frequency vector."""
+def _build_term_vector(tokens: List[str], idf: Optional[Dict[str, float]] = None) -> Dict[str, float]:
+    """Build L2-normalized TF-IDF vector."""
     if not tokens:
         return {}
     counts: Dict[str, int] = {}
     for t in tokens:
         counts[t] = counts.get(t, 0) + 1
-    norm = math.sqrt(sum(c * c for c in counts.values()))
+    weighted: Dict[str, float] = {}
+    for t, c in counts.items():
+        w = (1.0 + math.log(c)) * (idf.get(t, 1.5) if idf else 1.0)
+        weighted[t] = w
+    norm = math.sqrt(sum(w * w for w in weighted.values()))
     if norm == 0:
         return {}
-    return {k: v / norm for k, v in counts.items()}
+    return {k: v / norm for k, v in weighted.items()}
 
 
 def _cosine_similarity(v1: Dict[str, float], v2: Dict[str, float]) -> float:
@@ -150,18 +183,35 @@ class SemanticRouter:
     """Cognitive intent classifier and task router."""
 
     def __init__(self):
-        # Pre-compute exemplar term vectors for fast offline scoring
-        self._exemplar_vectors: Dict[str, List[Dict[str, float]]] = {}
+        # Compute IDF weights across exemplar corpus
+        doc_freq: Dict[str, int] = {}
+        total_docs = 0
+        tokenized_corpus: Dict[str, List[List[str]]] = {}
         for task, exemplars in TASK_EXEMPLARS.items():
+            tokenized_corpus[task] = []
+            for ex in exemplars:
+                total_docs += 1
+                toks = _tokenize(ex)
+                tokenized_corpus[task].append(toks)
+                for unique_tok in set(toks):
+                    doc_freq[unique_tok] = doc_freq.get(unique_tok, 0) + 1
+
+        self._idf: Dict[str, float] = {
+            tok: math.log((1.0 + total_docs) / (1.0 + df)) + 1.0
+            for tok, df in doc_freq.items()
+        }
+
+        self._exemplar_vectors: Dict[str, List[Dict[str, float]]] = {}
+        for task, tok_lists in tokenized_corpus.items():
             self._exemplar_vectors[task] = [
-                _build_term_vector(_tokenize(ex)) for ex in exemplars
+                _build_term_vector(toks, self._idf) for toks in tok_lists
             ]
 
     def classify(self, prompt: str, classification: Optional[str] = None) -> SemanticRouteDecision:
         """Classify prompt intent and determine optimal route."""
-        text = prompt.strip()
+        text = extract_content_text(prompt).strip()
         tokens = _tokenize(text)
-        query_vec = _build_term_vector(tokens)
+        query_vec = _build_term_vector(tokens, self._idf)
 
         detected_features: List[str] = []
         scores: Dict[str, float] = {k: 0.05 for k in TASK_ROUTES.keys()}
@@ -174,7 +224,7 @@ class SemanticRouter:
                 scores[task_name] = scores.get(task_name, 0.0) + weight
                 detected_features.append(f"regex:{task_name}({len(matches)})")
 
-        # 2. Semantic exemplar similarity scoring
+        # 2. TF-IDF Semantic exemplar similarity scoring
         if query_vec:
             for task_name, vectors in self._exemplar_vectors.items():
                 sims = [_cosine_similarity(query_vec, v) for v in vectors]
@@ -185,7 +235,10 @@ class SemanticRouter:
 
         # 3. Fast chat heuristics for very short conversational queries
         word_count = len(text.split())
-        if word_count <= 6 and not any(f.startswith("regex:coding") or f.startswith("regex:math") for f in detected_features):
+        if word_count <= 6 and not any(
+            f.startswith(("regex:coding", "regex:math", "regex:multilingual", "regex:governance"))
+            for f in detected_features
+        ):
             scores["fast_chat"] = scores.get("fast_chat", 0.0) + 0.45
             detected_features.append("heuristic:short_chat")
 

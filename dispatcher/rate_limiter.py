@@ -8,7 +8,7 @@ Integrates dynamically with the Bayesian Trust Ledger:
   - Trusted agents: expanded capacity (default 180 RPM)
 
 Supports:
-  1. Distributed Redis Backplane (atomic sorted-set sliding window across multi-node clusters)
+  1. Distributed Redis Backplane (atomic Lua sorted-set sliding window across multi-node clusters)
   2. Thread-Safe In-Memory Sliding Window (local-first standalone operation and zero-downtime fallback)
 """
 
@@ -21,6 +21,30 @@ from collections import deque
 from typing import Optional, Tuple
 
 logger = logging.getLogger("dispatch.rate_limiter")
+
+# Atomic Lua script for single-RTT, race-free sliding window rate limiting in Redis
+_SLIDING_WINDOW_LUA = """
+local key = KEYS[1]
+local now = tonumber(ARGV[1])
+local cutoff = tonumber(ARGV[2])
+local max_rpm = tonumber(ARGV[3])
+local member_id = ARGV[4]
+local ttl = tonumber(ARGV[5])
+
+redis.call('ZREMRANGEBYSCORE', key, 0, cutoff)
+local count = redis.call('ZCARD', key)
+if count >= max_rpm then
+    local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
+    local oldest_score = now
+    if oldest and #oldest >= 2 then
+        oldest_score = tonumber(oldest[2])
+    end
+    return {0, 0, oldest_score}
+end
+redis.call('ZADD', key, now, member_id)
+redis.call('EXPIRE', key, ttl)
+return {1, max_rpm - (count + 1), 0}
+"""
 
 
 class InMemorySlidingWindowRateLimiter:
@@ -77,7 +101,7 @@ class InMemorySlidingWindowRateLimiter:
 
 
 class RedisSlidingWindowRateLimiter:
-    """Distributed Redis-backed sliding-window rate limiter using sorted sets."""
+    """Distributed Redis-backed sliding-window rate limiter using atomic Lua sorted sets."""
 
     def __init__(self, redis_client=None, redis_url: Optional[str] = None,
                  window_seconds: float = 60.0):
@@ -120,8 +144,21 @@ class RedisSlidingWindowRateLimiter:
         now = time.time()
         cutoff = now - self.window_seconds
         member_id = f"{now}:{uuid.uuid4().hex[:8]}"
+        ttl = max(1, int(self.window_seconds * 2))
 
         try:
+            if hasattr(self.client, "eval"):
+                res = self.client.eval(
+                    _SLIDING_WINDOW_LUA, 1, redis_key, now, cutoff, max_rpm, member_id, ttl
+                )
+                allowed_flag = int(res[0])
+                if allowed_flag == 1:
+                    return True, max(0, int(res[1])), 0
+                oldest_score = float(res[2]) if res[2] else now
+                retry_after = max(1, int(oldest_score + self.window_seconds - now))
+                return False, 0, retry_after
+
+            # Fallback pipeline for lightweight mocks without Lua eval
             pipe = self.client.pipeline()
             pipe.zremrangebyscore(redis_key, 0, cutoff)
             pipe.zcard(redis_key)
@@ -133,10 +170,9 @@ class RedisSlidingWindowRateLimiter:
                 retry_after = max(1, int(oldest_score + self.window_seconds - now))
                 return False, 0, retry_after
 
-            # Under limit: insert timestamp member and set TTL
             pipe = self.client.pipeline()
             pipe.zadd(redis_key, {member_id: now})
-            pipe.expire(redis_key, int(self.window_seconds * 2))
+            pipe.expire(redis_key, ttl)
             pipe.execute()
 
             remaining = max(0, max_rpm - (current_count + 1))
@@ -153,7 +189,10 @@ class RedisSlidingWindowRateLimiter:
             if key:
                 self.client.delete(f"dispatch:ratelimit:{key}")
             else:
-                keys = self.client.keys("dispatch:ratelimit:*")
+                if hasattr(self.client, "scan_iter"):
+                    keys = list(self.client.scan_iter("dispatch:ratelimit:*", count=100))
+                else:
+                    keys = self.client.keys("dispatch:ratelimit:*")
                 if keys:
                     self.client.delete(*keys)
         except Exception as e:
@@ -173,7 +212,6 @@ class HybridRateLimiter:
 
     def _init_redis(self, redis_url: Optional[str] = None):
         url = redis_url or os.getenv("REDIS_URL")
-        # Only initialize if Redis environment is specified or active
         if url or os.getenv("REDIS_HOST") or os.getenv("DISPATCH_REDIS_RATE_LIMIT"):
             try:
                 self.redis_limiter = RedisSlidingWindowRateLimiter(

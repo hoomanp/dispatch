@@ -77,6 +77,29 @@ class TestBanditRouter(unittest.TestCase):
         for count in selections.values():
             self.assertGreater(count, 5)
 
+    def test_contextual_task_conditioning_and_user_satisfaction(self):
+        # Train local-llama to be great at coding, but poor at math
+        for _ in range(8):
+            self.router.record_feedback(
+                "local-llama", success=True, latency_ms=100, cost_usd=0.0,
+                user_satisfaction=0.95, task="coding"
+            )
+            self.router.record_feedback(
+                "local-llama", success=False, latency_ms=2000, cost_usd=0.0,
+                user_satisfaction=-0.8, task="math"
+            )
+            self.router.record_feedback(
+                "deepseek-cloud", success=True, latency_ms=400, cost_usd=0.005,
+                user_satisfaction=0.9, task="math"
+            )
+
+        coding_stats = self.router.stats(task="coding")
+        math_stats = self.router.stats(task="math")
+        self.assertGreater(coding_stats["local-llama"]["expected_value"],
+                           math_stats["local-llama"]["expected_value"])
+        self.assertGreater(math_stats["deepseek-cloud"]["expected_value"],
+                           math_stats["local-llama"]["expected_value"])
+
 
 class TestPrivacyMask(unittest.TestCase):
     def setUp(self):
@@ -129,6 +152,22 @@ class TestPrivacyMask(unittest.TestCase):
         model_reply = f"Acknowledged request with token {synthetic_keys[0]}."
         unmasked_reply = self.masker.unmask_text(model_reply, token_map)
         self.assertIn(token_map[synthetic_keys[0]], unmasked_reply)
+
+    def test_multi_turn_bijection_and_prefix_collision_safety(self):
+        messages = [
+            {"role": "user", "content": "Contact alice@example.com on host 10.0.0.1 or 10.0.0.123."},
+            {"role": "assistant", "content": "Noted."},
+            {"role": "user", "content": "Now CC bob@example.com and alice@example.com."},
+        ]
+        masked_msgs, token_map, _ = self.masker.mask_messages(messages)
+        # Ensure alice and bob got distinct tokens and neither was overwritten
+        self.assertEqual(token_map.get("<MASK:EMAIL_1>"), "alice@example.com")
+        self.assertEqual(token_map.get("<MASK:EMAIL_2>"), "bob@example.com")
+        # Ensure 10.0.0.1 did not corrupt 10.0.0.123
+        turn0_unmasked = self.masker.unmask_text(masked_msgs[0]["content"], token_map)
+        turn2_unmasked = self.masker.unmask_text(masked_msgs[2]["content"], token_map)
+        self.assertEqual(turn0_unmasked, messages[0]["content"])
+        self.assertEqual(turn2_unmasked, messages[2]["content"])
 
 
 class TestTrustLedgerRedisBroadcast(unittest.TestCase):

@@ -91,31 +91,36 @@ class TrustLedger:
     def __init__(self, db_path: Path = None):
         if db_path is None:
             db_path = DB_PATH
+        import threading
+        self._lock = threading.RLock()
+        self._redis = None
+        self._redis_checked = False
         self.db = sqlite3.connect(str(db_path), timeout=30.0, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
-        self.db.executescript("""
-            PRAGMA journal_mode=WAL;
-            PRAGMA busy_timeout=5000;
-            CREATE TABLE IF NOT EXISTS trust_agents (
-                agent_id TEXT PRIMARY KEY,
-                alpha REAL NOT NULL DEFAULT 1.0,
-                beta REAL NOT NULL DEFAULT 1.0,
-                events INTEGER NOT NULL DEFAULT 0,
-                last_event_at REAL NOT NULL DEFAULT 0,
-                created_at REAL NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS trust_events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                agent_id TEXT NOT NULL,
-                event_type TEXT NOT NULL,
-                weight REAL NOT NULL,
-                detail TEXT DEFAULT '',
-                timestamp REAL NOT NULL
-            );
-            CREATE INDEX IF NOT EXISTS idx_trust_events_agent
-                ON trust_events(agent_id);
-        """)
-        self.db.commit()
+        with self._lock:
+            self.db.executescript("""
+                PRAGMA journal_mode=WAL;
+                PRAGMA busy_timeout=5000;
+                CREATE TABLE IF NOT EXISTS trust_agents (
+                    agent_id TEXT PRIMARY KEY,
+                    alpha REAL NOT NULL DEFAULT 1.0,
+                    beta REAL NOT NULL DEFAULT 1.0,
+                    events INTEGER NOT NULL DEFAULT 0,
+                    last_event_at REAL NOT NULL DEFAULT 0,
+                    created_at REAL NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS trust_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    agent_id TEXT NOT NULL,
+                    event_type TEXT NOT NULL,
+                    weight REAL NOT NULL,
+                    detail TEXT DEFAULT '',
+                    timestamp REAL NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_trust_events_agent
+                    ON trust_events(agent_id);
+            """)
+            self.db.commit()
 
     def _decay(self, alpha: float, beta: float, last_event_at: float,
               now: float) -> tuple[float, float]:
@@ -131,53 +136,70 @@ class TrustLedger:
         beta = 1.0 + (beta - 1.0) * decay
         return alpha, beta
 
-    def record(self, agent_id: str, event_type: str, detail: str = "") -> None:
+    def record(self, agent_id: str, event_type: str, detail: str = "") -> TrustSnapshot:
         if event_type not in WEIGHTS:
             raise ValueError(f"unknown trust event type: {event_type!r}")
         weight = WEIGHTS[event_type]
         now = time.time()
-        row = self.db.execute(
-            "SELECT alpha, beta, events, last_event_at FROM trust_agents "
-            "WHERE agent_id=?", (agent_id,)).fetchone()
-        if row is None:
-            alpha, beta, events = 1.0, 1.0, 0
-        else:
-            alpha, beta = self._decay(row["alpha"], row["beta"],
-                                      row["last_event_at"], now)
-            events = row["events"]
-        is_good = event_type.endswith(("allow", "pass", "approve"))
-        if is_good:
-            alpha += weight
-        else:
-            beta += weight
         import json
         detail_str = json.dumps(detail) if isinstance(detail, (dict, list)) else (detail or "")
-        with self.db:
-            self.db.execute(
-                "INSERT INTO trust_agents (agent_id, alpha, beta, events, "
-                "last_event_at, created_at) VALUES (?,?,?,?,?,?) "
-                "ON CONFLICT(agent_id) DO UPDATE SET "
-                "alpha=excluded.alpha, beta=excluded.beta, "
-                "events=excluded.events, last_event_at=excluded.last_event_at",
-                (agent_id, alpha, beta, events + 1, now, now))
-            self.db.execute(
-                "INSERT INTO trust_events (agent_id, event_type, weight, "
-                "detail, timestamp) VALUES (?,?,?,?,?)",
-                (agent_id, event_type, weight, detail_str, now))
+        with self._lock:
+            row = self.db.execute(
+                "SELECT alpha, beta, events, last_event_at FROM trust_agents "
+                "WHERE agent_id=?", (agent_id,)).fetchone()
+            if row is None:
+                alpha, beta, events = 1.0, 1.0, 0
+            else:
+                alpha, beta = self._decay(row["alpha"], row["beta"],
+                                          row["last_event_at"], now)
+                events = row["events"]
+            is_good = event_type.endswith(("allow", "pass", "approve"))
+            if is_good:
+                alpha += weight
+            else:
+                beta += weight
+            with self.db:
+                self.db.execute(
+                    "INSERT INTO trust_agents (agent_id, alpha, beta, events, "
+                    "last_event_at, created_at) VALUES (?,?,?,?,?,?) "
+                    "ON CONFLICT(agent_id) DO UPDATE SET "
+                    "alpha=excluded.alpha, beta=excluded.beta, "
+                    "events=excluded.events, last_event_at=excluded.last_event_at",
+                    (agent_id, alpha, beta, events + 1, now, now))
+                self.db.execute(
+                    "INSERT INTO trust_events (agent_id, event_type, weight, "
+                    "detail, timestamp) VALUES (?,?,?,?,?)",
+                    (agent_id, event_type, weight, detail_str, now))
+            snap = self.snapshot(agent_id)
         self._broadcast(agent_id, event_type, detail_str, alpha, beta)
-        return self.snapshot(agent_id)
+        return snap
 
-    def _broadcast(self, agent_id: str, event_type: str, detail: str, alpha: float, beta: float):
-        """Broadcast trust event to peer instances via Redis PubSub if configured."""
+    def _get_redis(self):
+        if self._redis_checked:
+            return self._redis
+        self._redis_checked = True
         if not os.getenv("REDIS_URL") and not os.getenv("REDIS_HOST"):
-            return
+            return None
         try:
-            import json
             import redis
             host = os.getenv("REDIS_HOST", "redis")
             port = int(os.getenv("REDIS_PORT", "6379"))
             url = os.getenv("REDIS_URL")
-            r = redis.from_url(url, socket_timeout=1.0) if url else redis.Redis(host=host, port=port, socket_timeout=1.0)
+            self._redis = (
+                redis.from_url(url, socket_timeout=1.0)
+                if url else redis.Redis(host=host, port=port, socket_timeout=1.0)
+            )
+        except Exception:
+            self._redis = None
+        return self._redis
+
+    def _broadcast(self, agent_id: str, event_type: str, detail: str, alpha: float, beta: float):
+        """Broadcast trust event to peer instances via persistent Redis PubSub pool if configured."""
+        r = self._get_redis()
+        if r is None:
+            return
+        try:
+            import json
             msg = json.dumps({
                 "agent_id": agent_id,
                 "event_type": event_type,
@@ -188,12 +210,13 @@ class TrustLedger:
             })
             r.publish("dispatch:events:trust", msg)
         except Exception:
-            pass
+            self._redis = None
 
     def snapshot(self, agent_id: str) -> TrustSnapshot:
-        row = self.db.execute(
-            "SELECT alpha, beta, events, last_event_at FROM trust_agents "
-            "WHERE agent_id=?", (agent_id,)).fetchone()
+        with self._lock:
+            row = self.db.execute(
+                "SELECT alpha, beta, events, last_event_at FROM trust_agents "
+                "WHERE agent_id=?", (agent_id,)).fetchone()
         if row is None:
             alpha, beta, events = 1.0, 1.0, 0
         else:
@@ -201,8 +224,6 @@ class TrustLedger:
                                       row["last_event_at"], time.time())
             events = row["events"]
         score = alpha / (alpha + beta)
-        # Confidence: how peaked the Beta is relative to the uninformative
-        # prior — grows toward 1 as total evidence (alpha+beta) grows.
         confidence = 1.0 - (2.0 / (alpha + beta))
         confidence = max(0.0, min(1.0, confidence))
         tier_name, _, _ = tier_for_score(score)
@@ -212,17 +233,19 @@ class TrustLedger:
                             events=events, tier_name=tier_name)
 
     def recent_events(self, agent_id: str, limit: int = 20) -> list[dict]:
-        rows = self.db.execute(
-            "SELECT event_type, weight, detail, timestamp FROM trust_events "
-            "WHERE agent_id=? ORDER BY timestamp DESC LIMIT ?",
-            (agent_id, limit)).fetchall()
+        with self._lock:
+            rows = self.db.execute(
+                "SELECT event_type, weight, detail, timestamp FROM trust_events "
+                "WHERE agent_id=? ORDER BY timestamp DESC LIMIT ?",
+                (agent_id, limit)).fetchall()
         return [dict(r) for r in rows]
 
     def leaderboard(self, limit: int = 50) -> list[TrustSnapshot]:
-        rows = self.db.execute(
-            "SELECT agent_id FROM trust_agents ORDER BY last_event_at DESC "
-            "LIMIT ?", (limit,)).fetchall()
-        return [self.snapshot(r["agent_id"]) for r in rows]
+        with self._lock:
+            rows = self.db.execute(
+                "SELECT agent_id FROM trust_agents ORDER BY last_event_at DESC "
+                "LIMIT ?", (limit,)).fetchall()
+            return [self.snapshot(r["agent_id"]) for r in rows]
 
 
 trust = TrustLedger()
