@@ -15,4 +15,5 @@ data/
 .coverage
 htmlcov/
 *.egg-info/
+evals/results/
 
