@@ -1,0 +1,222 @@
+[
+  {
+    "id": "req-001-run1",
+    "prompt": "How do I update the credit card on my subscription account?",
+    "rubric": {
+      "required_terms": [
+        "billing",
+        "settings",
+        "payment"
+      ]
+    }
+  },
+  {
+    "id": "req-002-run1",
+    "prompt": "I need to dispute an unauthorized charge on my account and request an immediate refund.",
+    "rubric": {
+      "required_terms": [
+        "dispute",
+        "investigation",
+        "refund"
+      ]
+    }
+  },
+  {
+    "id": "req-003-run1",
+    "prompt": "What are your business support hours and response time SLAs?",
+    "rubric": {
+      "required_terms": [
+        "hours",
+        "support",
+        "sla"
+      ]
+    }
+  },
+  {
+    "id": "req-004-run1",
+    "prompt": "Please cancel my annual agreement immediately under section 4.2 terms of service exception.",
+    "rubric": {
+      "required_terms": [
+        "cancellation",
+        "terms",
+        "policy"
+      ]
+    }
+  },
+  {
+    "id": "req-005-run1",
+    "prompt": "Where can I download the SOC 2 compliance report for my organization's vendor audit?",
+    "rubric": {
+      "required_terms": [
+        "compliance",
+        "security",
+        "report"
+      ]
+    }
+  },
+  {
+    "id": "req-001-run2",
+    "prompt": "How do I update the credit card on my subscription account?",
+    "rubric": {
+      "required_terms": [
+        "billing",
+        "settings",
+        "payment"
+      ]
+    }
+  },
+  {
+    "id": "req-002-run2",
+    "prompt": "I need to dispute an unauthorized charge on my account and request an immediate refund.",
+    "rubric": {
+      "required_terms": [
+        "dispute",
+        "investigation",
+        "refund"
+      ]
+    }
+  },
+  {
+    "id": "req-003-run2",
+    "prompt": "What are your business support hours and response time SLAs?",
+    "rubric": {
+      "required_terms": [
+        "hours",
+        "support",
+        "sla"
+      ]
+    }
+  },
+  {
+    "id": "req-004-run2",
+    "prompt": "Please cancel my annual agreement immediately under section 4.2 terms of service exception.",
+    "rubric": {
+      "required_terms": [
+        "cancellation",
+        "terms",
+        "policy"
+      ]
+    }
+  },
+  {
+    "id": "req-005-run2",
+    "prompt": "Where can I download the SOC 2 compliance report for my organization's vendor audit?",
+    "rubric": {
+      "required_terms": [
+        "compliance",
+        "security",
+        "report"
+      ]
+    }
+  },
+  {
+    "id": "req-001-run3",
+    "prompt": "How do I update the credit card on my subscription account?",
+    "rubric": {
+      "required_terms": [
+        "billing",
+        "settings",
+        "payment"
+      ]
+    }
+  },
+  {
+    "id": "req-002-run3",
+    "prompt": "I need to dispute an unauthorized charge on my account and request an immediate refund.",
+    "rubric": {
+      "required_terms": [
+        "dispute",
+        "investigation",
+        "refund"
+      ]
+    }
+  },
+  {
+    "id": "req-003-run3",
+    "prompt": "What are your business support hours and response time SLAs?",
+    "rubric": {
+      "required_terms": [
+        "hours",
+        "support",
+        "sla"
+      ]
+    }
+  },
+  {
+    "id": "req-004-run3",
+    "prompt": "Please cancel my annual agreement immediately under section 4.2 terms of service exception.",
+    "rubric": {
+      "required_terms": [
+        "cancellation",
+        "terms",
+        "policy"
+      ]
+    }
+  },
+  {
+    "id": "req-005-run3",
+    "prompt": "Where can I download the SOC 2 compliance report for my organization's vendor audit?",
+    "rubric": {
+      "required_terms": [
+        "compliance",
+        "security",
+        "report"
+      ]
+    }
+  },
+  {
+    "id": "req-001-run4",
+    "prompt": "How do I update the credit card on my subscription account?",
+    "rubric": {
+      "required_terms": [
+        "billing",
+        "settings",
+        "payment"
+      ]
+    }
+  },
+  {
+    "id": "req-002-run4",
+    "prompt": "I need to dispute an unauthorized charge on my account and request an immediate refund.",
+    "rubric": {
+      "required_terms": [
+        "dispute",
+        "investigation",
+        "refund"
+      ]
+    }
+  },
+  {
+    "id": "req-003-run4",
+    "prompt": "What are your business support hours and response time SLAs?",
+    "rubric": {
+      "required_terms": [
+        "hours",
+        "support",
+        "sla"
+      ]
+    }
+  },
+  {
+    "id": "req-004-run4",
+    "prompt": "Please cancel my annual agreement immediately under section 4.2 terms of service exception.",
+    "rubric": {
+      "required_terms": [
+        "cancellation",
+        "terms",
+        "policy"
+      ]
+    }
+  },
+  {
+    "id": "req-005-run4",
+    "prompt": "Where can I download the SOC 2 compliance report for my organization's vendor audit?",
+    "rubric": {
+      "required_terms": [
+        "compliance",
+        "security",
+        "report"
+      ]
+    }
+  }
+]
