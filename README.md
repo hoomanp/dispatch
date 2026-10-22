@@ -1,8 +1,14 @@
 # DISPATCH: Multi-Tenant LLM Inference Gateway & FinOps Control Plane
 
-DISPATCH is an enterprise reference inference gateway designed to control unit economics, preserve provider KV cache locality, isolate multi-tenant quotas, and enforce deterministic circuit breaking for tool-using AI agents.
+**Owner:** Hooman Parta (HP)  
+**Target Role Alignment:** L8+ Director / VP of Engineering (AI Platform, Cloud Infrastructure & Security Governance)  
+**Repository:** [github.com/hoomanp/dispatch](https://github.com/hoomanp/dispatch)  
 
-## The Production Problem
+DISPATCH is an executive-grade reference control plane designed to govern unit economics, preserve transformer KV cache locality, isolate multi-tenant quotas, and enforce deterministic circuit breaking across foundation model APIs.
+
+---
+
+## 1. The Production Problem
 
 When enterprises scale from a single AI pilot to 40+ product engineering teams sharing foundation model endpoints, infrastructure margins and reliability degrade across three predictable fault lines:
 1. **Prefix Cache Invalidation:** Developers inject dynamic timestamps, session UUIDs, or unsorted JSON tool schemas into prompt headers, invalidating transformer KV caches from token 0 and increasing multi-step workflow costs by up to 159%.
@@ -14,14 +20,14 @@ Incoming Agent Request (Tenant Header + Priority Tier + Payload)
 │
 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 1. HIERARCHICAL QUOTA ENGINE (src/quota.py)                                 │
+│ 1. HIERARCHICAL QUOTA ENGINE (dispatch/quota.py)                            │
 │    • Enforces per-tenant TPM budgets & per-workflow dollar caps             │
 │    • Preempts Tier-2 batch traffic when global pool utilization >= 80%      │
 └──────┬──────────────────────────────────────────────────────────────────────┘
 │
 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 2. 3-BLOCK PROMPT CANONICALIZER (src/canonicalizer.py)                      │
+│ 2. 3-BLOCK PROMPT CANONICALIZER (dispatch/canonicalizer.py)                 │
 │    • Block 1 (Immutable): Sorts MCP JSON keys; strips dynamic headers       │
 │    • Block 2 (Session): Pins tenant context inside 300s TTL window          │
 │    • Block 3 (Dynamic): Appends tool outputs strictly at prompt tail        │
@@ -29,7 +35,7 @@ Incoming Agent Request (Tenant Header + Priority Tier + Payload)
 │
 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 3. CAPABILITY ROUTER & CIRCUIT BREAKER (src/circuit_breaker.py)             │
+│ 3. CAPABILITY ROUTER & CIRCUIT BREAKER (dispatch/circuit_breaker.py)        │
 │    • Sticky hashing on sha256(Block 1 + Block 2) for KV cache locality      │
 │    • Tier 1 (Compact): Structured extraction & single-tool dispatch         │
 │    • Tier 2 (Frontier): Multi-step synthesis & high-ambiguity planning      │
@@ -38,22 +44,26 @@ Incoming Agent Request (Tenant Header + Priority Tier + Payload)
 │
 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ 4. FINOPS TELEMETRY LEDGER (src/telemetry.py)                               │
+│ 4. FINOPS TELEMETRY LEDGER (dispatch/telemetry.py)                          │
 │    • Emits cost_per_completed_workflow, cache_hit_ratio, gateway_p99_ms     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Benchmark Results (`make eval`)
+---
+
+## 2. Benchmark Results (`make eval`)
 
 Evaluated across 50 representative 10-step operations agent workflows (20,000-token system/tool prefix, 2,000-token dynamic input, 1,000-token output per step) under standard frontier pricing ($4.00/M input, $20.00/M output, $5.00/M cache write, $0.20/M cache read) and compact tier pricing ($0.30/M input, $1.20/M output):
 
 | Gateway Policy | Cost / 10-Step Workflow | Prefix Cache Hit Ratio | Gateway Overhead (p99) | Tier-0 SLA Preservation Under Batch Flood |
 | :--- | :--- | :--- | :--- | :--- |
-| **Naive Unstratified (Round-Robin)** | $1.080 | 0.0% | 4.2 ms | 42.0% (Failed HTTP 429) |
-| **Canonicalized Prefix + Sticky Frontier** | $0.416 (-61.5%) | 90.0% | 8.7 ms | 42.0% (Failed HTTP 429) |
-| **DISPATCH Control Plane (Full)** | **$0.184 (-83.0%)** | **90.0%** | **11.4 ms** | **100.0% (Tier-2 Preempted)** |
+| **Naive Unstratified (Round-Robin Frontier)** | $1.080 | 0.0% | 0.07 ms | 42.0% (Unpartitioned HTTP 429) |
+| **Canonicalized Prefix + Sticky Frontier** | $0.416 (-61.5%) | 90.0% | 0.07 ms | 42.0% (Unpartitioned HTTP 429) |
+| **DISPATCH Control Plane (Full)** | **$0.209 (-80.7%)** | **90.0%** | **0.02 ms** | **100.0% (100% Tier-2 Preempted)** |
 
-## Developer Ergonomics (Paved-Road Adoption)
+---
+
+## 3. Developer Ergonomics (Paved-Road Adoption)
 
 Product teams onboard without modifying agent business logic by passing standard requests through the DISPATCH SDK wrapper:
 
@@ -61,61 +71,70 @@ Product teams onboard without modifying agent business logic by passing standard
 from dispatch import GatewayClient, PriorityTier
 
 client = GatewayClient(tenant_id="sec-ops-prod", priority=PriorityTier.TIER_0_CRITICAL)
-response = client.execute_step(
+response = client.execute_workflow(
     workflow_id="inc-8841",
     system_prefix=SYSTEM_POLICY,
     tools=MCP_TOOL_SCHEMAS,
-    messages=turn_history,
+    session_context={"environment": "production"},
+    steps=turn_history,
     max_workflow_budget_usd=1.00
 )
 ```
 
-## Directory Structure
+---
+
+## 4. Repository Layout
 
 ```
+dispatch/
 ├── Makefile                           # Automation targets (make eval, make test)
-├── eval.py                            # 50-workflow benchmark evaluation harness
-├── dispatch/                          # Public SDK interface
-│   └── __init__.py                    # Re-exports GatewayClient & PriorityTier
-├── src/                               # Core Control Plane Modules
-│   ├── canonicalizer.py               # 3-Block Prompt Canonicalizer & Consistent Hashing
-│   ├── quota.py                       # Hierarchical Multi-Tenant Token Buckets & Preemption
-│   ├── circuit_breaker.py             # Sub-25ms Circuit Breaker, Failover & Budget Sentinel
-│   ├── telemetry.py                   # FinOps Chargeback & Gateway Overhead Isolation
-│   ├── gateway.py                     # Central Control Plane Inference Gateway Engine
-│   └── client.py                      # GatewayClient SDK wrapper
-└── tests/                             # Comprehensive test suites
-    ├── test_v2_canonicalizer.py
-    ├── test_v2_quota.py
-    ├── test_v2_circuit_breaker.py
-    ├── test_v2_telemetry.py
-    └── test_v2_gateway_client.py
+├── requirements.txt                   # Core runtime dependencies
+├── README.md                          # Executive reference documentation
+├── THREAT_MODEL.md                    # Multi-tenant security architecture & compliance boundaries
+├── DECISION_LOG.md                    # Architectural Decision Records (ADRs)
+├── dispatch_v2_spec.md                # Agent execution specification
+├── data/
+│   └── golden_workflows.json          # Auto-generated 50 multi-step workflows (10 steps each)
+├── dispatch/                          # Core Control Plane Package
+│   ├── __init__.py                    # Public exports
+│   ├── canonicalizer.py               # 3-Block prompt stratifier & JSON key sorter
+│   ├── quota.py                       # Hierarchical token bucket with Tier-0 preemption
+│   ├── circuit_breaker.py             # Sliding-window error/latency tracker & failover
+│   ├── router.py                      # Capability-aware router + sticky session hashing
+│   └── telemetry.py                   # FinOps chargeback ledger & p99 overhead timer
+├── tests/                             # Verification test suites
+│   ├── test_canonicalizer.py
+│   ├── test_quota_preemption.py
+│   └── test_circuit_breaker.py
+└── eval.py                            # Reproduces benchmark table via `make eval`
 ```
 
-## Core Control Plane Modules
+---
 
-### 1. 3-Block Prompt Canonicalizer (`src/canonicalizer.py`)
-- **Block 1 (Static):** Sorts MCP JSON tool schemas recursively; regex-strips non-deterministic timestamps, time-of-day tokens, and UUIDs.
-- **Block 2 (Session):** Pinned tenant and workspace context with a 300s TTL; isolated with cryptographic HMAC salts (`HMAC-SHA256(secret, tenant_id || model_id || prompt)`).
+## 5. Core Control Plane Modules
+
+### Module 1: 3-Block Prompt Canonicalizer (`dispatch/canonicalizer.py`)
+- **Block 1 (Immutable):** Sorts MCP JSON tool schemas recursively with sorted keys; regex-strips non-deterministic timestamps, time-of-day tokens, and UUIDs.
+- **Block 2 (Session):** Pinned tenant and workspace context with a 300s TTL; isolated with cryptographic HMAC salts (`HMAC-SHA256(secret, tenant_id || model_id || routing_key)`).
 - **Block 3 (Dynamic):** Variable tool outputs and latest conversation turns appended strictly at the tail.
-- **Consistent Hashing Router:** Maps `sha256(Block 1 + Block 2)` deterministically to provider replicas to maximize warm KV cache hits.
+- **Worker Affinity:** Computes `sticky_routing_key = sha256(Block 1 + Block 2)` to direct sequential steps to warm worker replicas.
 
-### 2. Hierarchical Multi-Tenant Token Buckets (`src/quota.py`)
+### Module 2: Hierarchical Multi-Tenant Token Buckets (`dispatch/quota.py`)
 - Per-business-unit TPM and RPM quotas with three priority tiers: `TIER_0_CRITICAL`, `TIER_1_INTERNAL`, and `TIER_2_BATCH`.
 - When global inference pool utilization reaches $\ge 80\%$, automatically preempts `TIER_2_BATCH` requests (`HTTP 429: Preempted by Tier-0`) to ensure 100% SLA preservation for Tier-0 production traffic.
 
-### 3. Sub-25ms Circuit Breaker & Failover (`src/circuit_breaker.py`)
+### Module 3: Sub-25ms Circuit Breaker & Failover (`dispatch/circuit_breaker.py`)
 - Tracks a sliding 20-request window of provider errors (HTTP 429, 500, 502, 503, 529, and TTFT > 2000ms).
 - Trips to `OPEN` when failure rate exceeds 10%, instantly rerouting traffic to warm fallback providers.
 - Hard workflow blast-radius budget ceiling ($1.50 default) to immediately terminate runaway agent loops.
 
-### 4. FinOps Chargeback & Overhead Telemetry (`src/telemetry.py`)
-- Isolates internal gateway processing overhead (`time.perf_counter()`, target p99 $< 15$ ms) from upstream provider latency.
-- Emits structured FinOps records and validates mandatory enterprise chargeback headers (`X-Tenant-BU`, `X-Workflow-Type`, `X-Environment`).
+### Module 4: FinOps Chargeback & Overhead Telemetry (`dispatch/telemetry.py`)
+- Isolates internal gateway processing overhead (`time.perf_counter()`, p99 $< 15$ ms) from upstream provider latency.
+- Emits structured JSONL FinOps records (`.cache/finops_ledger.jsonl`) recording tenant ID, workflow ID, policy mode, total cost, and prefix cache hit ratio.
 
 ---
 
-## CapEx / OpEx Crossover Model: Managed APIs vs. Dedicated GPU Fleets
+## 6. CapEx / OpEx Crossover Model: Managed APIs vs. Dedicated GPU Fleets
 
 Evaluating self-hosted GPU clusters solely on peak theoretical token throughput ignores diurnal traffic troughs and SRE operational overhead.
 
@@ -132,7 +151,7 @@ Consider an enterprise workload processing **100 million input tokens and 20 mil
 
 ---
 
-## Mathematical Canary Governance: The Blast Radius Index ($BRI$)
+## 7. Mathematical Canary Governance: The Blast Radius Index ($BRI$)
 
 For agentic workloads, platform SRE teams can gate CI/CD canary deployments using a composite Blast Radius Index ($BRI$) computed over OpenTelemetry span links during a 5% traffic shadow or canary window:
 
@@ -147,7 +166,7 @@ Where:
 
 ---
 
-## Executive FinOps Attribution & Unit-Cost Chargeback
+## 8. Executive FinOps Attribution & Unit-Cost Chargeback
 
 | FinOps Metric | Formula / Definition | Executive Action Trigger |
 | :--- | :--- | :--- |
@@ -158,13 +177,12 @@ Where:
 
 ---
 
-## Verification Commands
+## 9. Verification Commands
 
-- **Run Benchmark Evaluation:**
-  ```bash
-  make eval
-  ```
-- **Run Complete Unit Test Suite:**
-  ```bash
-  make test
-  ```
+```bash
+# Run 100% deterministic benchmark harness ($0.00 external API spend)
+make eval
+
+# Run unit tests via pytest
+make test
+```

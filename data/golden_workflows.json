@@ -1,0 +1,4252 @@
+[
+  {
+    "workflow_id": "wf-000",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 0"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 0"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 0"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 0"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 0"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 0"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 0"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 0"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 0"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 0"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-001",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 1"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 1"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 1"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 1"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 1"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 1"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 1"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 1"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 1"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 1"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-002",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 2"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 2"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 2"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 2"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 2"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 2"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 2"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 2"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 2"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 2"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-003",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 3"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 3"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 3"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 3"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 3"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 3"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 3"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 3"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 3"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 3"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-004",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 4"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 4"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 4"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 4"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 4"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 4"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 4"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 4"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 4"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 4"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-005",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 5"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 5"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 5"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 5"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 5"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 5"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 5"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 5"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 5"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 5"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-006",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 6"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 6"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 6"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 6"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 6"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 6"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 6"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 6"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 6"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 6"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-007",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 7"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 7"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 7"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 7"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 7"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 7"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 7"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 7"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 7"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 7"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-008",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 8"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 8"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 8"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 8"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 8"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 8"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 8"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 8"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 8"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 8"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-009",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 9"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 9"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 9"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 9"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 9"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 9"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 9"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 9"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 9"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 9"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-010",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 10"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 10"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 10"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 10"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 10"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 10"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 10"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 10"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 10"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 10"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-011",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 11"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 11"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 11"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 11"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 11"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 11"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 11"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 11"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 11"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 11"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-012",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 12"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 12"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 12"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 12"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 12"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 12"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 12"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 12"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 12"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 12"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-013",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 13"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 13"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 13"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 13"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 13"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 13"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 13"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 13"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 13"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 13"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-014",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 14"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 14"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 14"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 14"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 14"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 14"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 14"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 14"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 14"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 14"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-015",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 15"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 15"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 15"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 15"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 15"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 15"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 15"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 15"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 15"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 15"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-016",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 16"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 16"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 16"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 16"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 16"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 16"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 16"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 16"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 16"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 16"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-017",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 17"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 17"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 17"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 17"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 17"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 17"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 17"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 17"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 17"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 17"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-018",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 18"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 18"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 18"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 18"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 18"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 18"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 18"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 18"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 18"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 18"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-019",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 19"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 19"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 19"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 19"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 19"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 19"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 19"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 19"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 19"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 19"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-020",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 20"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 20"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 20"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 20"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 20"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 20"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 20"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 20"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 20"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 20"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-021",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 21"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 21"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 21"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 21"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 21"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 21"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 21"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 21"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 21"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 21"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-022",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 22"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 22"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 22"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 22"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 22"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 22"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 22"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 22"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 22"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 22"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-023",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 23"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 23"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 23"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 23"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 23"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 23"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 23"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 23"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 23"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 23"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-024",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 24"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 24"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 24"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 24"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 24"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 24"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 24"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 24"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 24"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 24"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-025",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 25"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 25"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 25"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 25"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 25"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 25"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 25"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 25"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 25"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 25"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-026",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 26"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 26"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 26"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 26"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 26"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 26"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 26"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 26"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 26"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 26"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-027",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 27"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 27"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 27"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 27"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 27"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 27"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 27"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 27"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 27"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 27"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-028",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 28"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 28"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 28"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 28"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 28"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 28"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 28"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 28"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 28"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 28"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-029",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 29"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 29"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 29"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 29"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 29"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 29"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 29"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 29"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 29"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 29"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-030",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 30"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 30"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 30"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 30"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 30"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 30"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 30"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 30"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 30"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 30"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-031",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 31"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 31"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 31"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 31"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 31"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 31"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 31"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 31"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 31"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 31"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-032",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 32"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 32"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 32"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 32"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 32"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 32"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 32"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 32"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 32"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 32"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-033",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 33"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 33"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 33"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 33"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 33"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 33"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 33"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 33"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 33"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 33"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-034",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 34"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 34"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 34"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 34"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 34"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 34"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 34"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 34"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 34"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 34"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-035",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 35"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 35"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 35"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 35"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 35"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 35"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 35"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 35"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 35"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 35"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-036",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 36"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 36"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 36"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 36"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 36"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 36"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 36"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 36"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 36"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 36"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-037",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 37"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 37"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 37"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 37"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 37"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 37"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 37"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 37"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 37"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 37"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-038",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 38"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 38"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 38"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 38"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 38"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 38"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 38"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 38"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 38"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 38"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-039",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 39"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 39"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 39"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 39"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 39"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 39"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 39"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 39"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 39"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 39"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-040",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 40"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 40"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 40"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 40"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 40"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 40"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 40"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 40"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 40"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 40"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-041",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 41"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 41"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 41"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 41"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 41"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 41"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 41"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 41"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 41"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 41"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-042",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 42"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 42"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 42"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 42"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 42"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 42"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 42"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 42"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 42"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 42"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-043",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 43"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 43"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 43"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 43"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 43"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 43"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 43"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 43"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 43"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 43"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-044",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 44"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 44"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 44"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 44"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 44"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 44"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 44"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 44"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 44"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 44"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-045",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 45"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 45"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 45"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 45"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 45"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 45"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 45"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 45"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 45"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 45"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-046",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 46"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 46"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 46"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 46"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 46"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 46"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 46"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 46"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 46"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 46"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-047",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 47"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 47"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 47"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 47"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 47"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 47"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 47"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 47"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 47"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 47"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-048",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 48"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 48"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 48"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 48"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 48"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 48"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 48"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 48"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 48"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 48"
+      }
+    ]
+  },
+  {
+    "workflow_id": "wf-049",
+    "steps": [
+      {
+        "step_index": 0,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 0 for workflow 49"
+      },
+      {
+        "step_index": 1,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 1 for workflow 49"
+      },
+      {
+        "step_index": 2,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 2 for workflow 49"
+      },
+      {
+        "step_index": 3,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 3 for workflow 49"
+      },
+      {
+        "step_index": 4,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 4 for workflow 49"
+      },
+      {
+        "step_index": 5,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 5 for workflow 49"
+      },
+      {
+        "step_index": 6,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 6 for workflow 49"
+      },
+      {
+        "step_index": 7,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 7 for workflow 49"
+      },
+      {
+        "step_index": 8,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "compact",
+        "prompt": "Execute diagnostic step 8 for workflow 49"
+      },
+      {
+        "step_index": 9,
+        "prefix_tokens": 20000,
+        "dynamic_input_tokens": 2000,
+        "output_tokens": 1000,
+        "complexity": "frontier",
+        "prompt": "Execute diagnostic step 9 for workflow 49"
+      }
+    ]
+  }
+]

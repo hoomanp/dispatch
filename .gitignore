@@ -8,7 +8,9 @@ __pycache__/
 venv/
 node_modules/
 .DS_Store
-data/
+.cache/
+data/*.db
+!data/golden_workflows.json
 *.zip
 .freebuff/
 .pytest_cache/
