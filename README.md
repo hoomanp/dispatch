@@ -1,7 +1,7 @@
-# DISPATCH: Multi-Tenant LLM Inference Gateway & FinOps Control Plane
+# DISPATCH: Capability-Aware LLM Routing Reference Implementation
 
-**Enterprise Inference Routing, KV Prefix Cache Canonicalization & Multi-Tenant Quota Preemption**  
-*A high-throughput AI gateway control plane governing inference unit economics, prefix cache locality, and Tier-0 SLA isolation across foundation model endpoints.*
+**Reference Prototype for Multi-Tier Model Routing, Prefix-Aware Caching & Latency Circuit-Breaking**  
+*A hands-on architectural reference implementation evaluating LLM inference routing unit economics, transformer KV prefix cache locality, and quota isolation on synthetic multi-step agent benchmarks.*
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![Cost Reduction: -80.7%](https://img.shields.io/badge/workflow%20cost--reduction--80.7%25-brightgreen.svg)](#2-benchmark-results-make-eval)
@@ -17,7 +17,7 @@
 | :--- | :--- |
 | **The Business Problem** | **Unbounded Inference Spend & Noisy-Neighbor Outages:** Enterprise LLM deployments scaling across dozens of product teams suffer from runaway token costs caused by accidental KV prefix cache invalidation (+159% spend), noisy-neighbor batch jobs exhausting shared cloud TPM quotas (HTTP 429 brownouts on Tier-0 services), and unbounded agent tool-retry storms. |
 | **The Architectural Invariant** | **Deterministic Prefix Stratification & Tier-0 Preemption:** DISPATCH enforces a strict 3-Block Prompt Contract (immutable sorted tool schemas, HMAC-isolated session context, and tail-appended dynamic turns) paired with sticky SHA-256 worker routing, sub-25ms sliding-window circuit breakers, and automatic preemption of Tier-2 batch traffic when global pool utilization crosses 80%. |
-| **The Economic & Risk Impact** | **80.7% Cost Reduction with 100% Tier-0 SLA Preservation:** Verified across 50 multi-step agent workflows (`make eval`), reducing 10-step workflow cost from $1.080 to **$0.209 (-80.7%)**, sustaining a **90.0% prefix cache hit ratio**, and preserving **100% Tier-0 availability** under batch floods at **0.02 ms** p99 gateway overhead. |
+| **Synthetic Benchmark Results** | **68–80% Synthetic Workflow Cost Reduction (`make eval`):** Evaluated across 50 synthetic 10-step agent workflows, reducing modeled 10-step workflow cost from $1.080 to **$0.209 (-80.7%)**, sustaining a **90.0% prefix cache hit ratio**, and preserving **100% Tier-0 availability** under simulated batch floods at **0.02 ms** p99 gateway overhead. |
 | **The Paved Road** | **Zero-Friction SDK & Gateway Proxy:** Product teams adopt FinOps governance and multi-model resilience via a drop-in `GatewayClient` without rewriting agent business logic. Enforces per-tenant chargeback attribution and hard per-workflow dollar ceilings automatically. |
 
 ---
